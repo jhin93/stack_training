@@ -1,7 +1,3 @@
-# UTS_sem1_fundamental
-
-<!-- List comprehension -->
-```python
 import random
 
 random.seed(10)
@@ -18,4 +14,3 @@ def Lab4Exc6():
     print(result)
 
 Lab4Exc6()
-```
