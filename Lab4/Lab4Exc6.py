@@ -5,7 +5,6 @@ random.seed(10)
 result = 0
 
 def Lab4Exc6():
-
     global result
     input_num = int(input("input : "))
     numbers = [random.randint(1,100) for _ in range(input_num)]
