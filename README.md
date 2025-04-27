@@ -1,6 +1,6 @@
 # UTS_sem1_fundamental
 
-<!-- List comprehension -->
+### List comprehension
 ```python
 import random
 
