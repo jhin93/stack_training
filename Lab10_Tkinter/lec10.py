@@ -1,6 +1,6 @@
 import tkinter as tk
 
-root = tk.TK()
+root = tk.Tk()
 root.geometry("300x200")
 root.title("My First GUI App")
 
