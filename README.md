@@ -1,7 +1,8 @@
 # UTS_sem1_fundamental
 
-### List comprehension
 ```python
+### List comprehension
+
 import random
 
 random.seed(10)
@@ -18,40 +19,39 @@ def Lab4Exc6():
     print(result)
 
 Lab4Exc6()
-```
 
 evens = [x for x in range(1, 11) if x % 2 == 0]
 print(evens)  
-# 출력: [2, 4, 6, 8, 10]
+출력: [2, 4, 6, 8, 10]
 
 words = ["hello", "world", "python"]
 lengths = [len(word) for word in words]
 print(lengths)  
-# 출력: [5, 5, 6]
+출력: [5, 5, 6]
 
 numbers = [1, 2, 3, 4]
 strings = [str(num) for num in numbers]
 print(strings)  
-# 출력: ['1', '2', '3', '4']
+출력: ['1', '2', '3', '4']
 
 ### Slicing
-# start: 슬라이싱 시작 인덱스 (포함)
-# stop: 슬라이싱 종료 인덱스 (제외)
-# step: 인덱스 증가 단위 (양수면 왼쪽에서 오른쪽, 음수면 오른쪽에서 왼쪽)
+- start: 슬라이싱 시작 인덱스 (포함)
+- stop: 슬라이싱 종료 인덱스 (제외)
+- step: 인덱스 증가 단위 (양수면 왼쪽에서 오른쪽, 음수면 오른쪽에서 왼쪽)
 
 lst = [1, 2, 3, 4, 5]
 print(lst[::-1])  
-# 출력: [5, 4, 3, 2, 1]
+출력: [5, 4, 3, 2, 1]
 
 test = 'abcde'
 print(test[1:4:-1])  
-# 출력: ''. 역방향이므로 start가 stop보다 커야 함. 근데 아님. 그래서 해당되는 문자열 없음.
+출력: ''. 역방향이므로 start가 stop보다 커야 함. 근데 아님. 그래서 해당되는 문자열 없음.
 print(test[4:1:-1])  
-# 출력: 'edc'
+출력: 'edc'
 print(test[::2])  
-# 출력: 'ace' (앞에 2칸씩 뒤)
+출력: 'ace' (앞에 2칸씩 뒤)
 print(test[::-2])  
-# 출력: 'eca' (뒤에서 2칸씩 앞으로)
+출력: 'eca' (뒤에서 2칸씩 앞으로)
 
 #lambda function
 
@@ -118,3 +118,4 @@ paired = list(zip(names, ages))
 unzipped_names, unzipped_ages = zip(*paired)
 print(unzipped_names)  # 출력: ('Alice', 'Bob', 'Charlie')
 print(unzipped_ages)   # 출력: (25, 30, 35)
+```
