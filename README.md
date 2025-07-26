@@ -1,4 +1,4 @@
-# UTS_sem1_fundamental
+## Python concepts
 
 ```python
 ### List comprehension
