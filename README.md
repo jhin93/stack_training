@@ -155,6 +155,10 @@ aws --endpoint-url=http://localhost:4566 ses list-identities --identity-type Ema
 ```
 aws --endpoint-url=http://localhost:4566 ses get-identity-verification-attributes --identities test@example.com
 ```
+
+dotnet ***add package 패키지이름***은 .NET에서 NuGet 패키지를 프로젝트에 추가하는 명령어이고,
+***npm install 패키지이름***은 Node.js에서 npm 패키지를 프로젝트에 추가하는 명령어입니다.
+둘 다 외부 라이브러리를 프로젝트에 설치해서 사용할 수 있게 해주는 역할을 합니다.
 결과의 VerificationStatus가 Success면 인증이 완료된 것입니다.
 
 
