@@ -121,3 +121,41 @@ unzipped_names, unzipped_ages = zip(*paired)
 print(unzipped_names)  # 출력: ('Alice', 'Bob', 'Charlie')
 print(unzipped_ages)   # 출력: (25, 30, 35)
 ```
+
+#### AWS SES, SQS
+
+-SQS 큐 생성 
+```
+aws --endpoint-url=http://localhost:4566 sqs create-queue --queue-name secureshifts-notifications 실행결과
+```
+Result:
+{ "QueueUrl": "http://sqs.ap-southeast-2.localhost.localstack.cloud:4566/000000000000/secureshifts-notification" } ~ ~ ~ ~ ~ ~ ~ ~ (END)
+
+이 결과는 LocalStack에서 SQS 큐가 정상적으로 생성되었음을 의미합니다.
+
+"QueueUrl" 값은 새로 생성된 SQS 큐의 엔드포인트 URL입니다.
+이 URL(http://sqs.ap-southeast-2.localhost.localstack.cloud:4566/000000000000/secureshifts-notification)을 통해 큐에 메시지를 보내거나 받을 수 있습니다.
+실제 AWS가 아닌 LocalStack 환경에서만 동작하는 테스트용 큐 URL입니다.
+즉, SQS 큐 생성이 성공적으로 완료되었고, 이후 코드나 AWS CLI에서 이 URL을 사용하면 됩니다.
+
+-SES 인증확인 방법
+SES 이메일 인증이 잘 되었는지 확인하려면 아래 방법을 사용하세요.
+
+
+AWS CLI로 인증 상태 조회
+아래 명령어를 실행하면 인증된 이메일 목록을 볼 수 있습니다.
+```
+aws --endpoint-url=http://localhost:4566 ses list-identities --identity-type EmailAddress
+```
+결과에 test@example.com이 있으면 인증이 등록된 것입니다.
+
+
+인증 상세 정보 확인
+이메일 인증 상태를 확인하려면 다음 명령어를 사용하세요.
+```
+aws --endpoint-url=http://localhost:4566 ses get-identity-verification-attributes --identities test@example.com
+```
+결과의 VerificationStatus가 Success면 인증이 완료된 것입니다.
+
+
+LocalStack에서는 실제 인증 메일이 오지 않으니, 위 명령어 결과만 확인하면 충분합니다.
