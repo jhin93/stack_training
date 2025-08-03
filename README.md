@@ -122,7 +122,9 @@ print(unzipped_names)  # 출력: ('Alice', 'Bob', 'Charlie')
 print(unzipped_ages)   # 출력: (25, 30, 35)
 ```
 
-#### AWS SES, SQS
+## AWS 
+
+####SES, SQS
 
 -SQS 큐 생성 
 ```
@@ -155,11 +157,16 @@ aws --endpoint-url=http://localhost:4566 ses list-identities --identity-type Ema
 ```
 aws --endpoint-url=http://localhost:4566 ses get-identity-verification-attributes --identities test@example.com
 ```
+LocalStack에서는 실제 인증 메일이 오지 않으니, 위 명령어 결과만 확인하면 충분합니다.
 
+
+## .NET
+
+#### dotnet add
 dotnet ***add package 패키지이름***은 .NET에서 NuGet 패키지를 프로젝트에 추가하는 명령어이고,
 ***npm install 패키지이름***은 Node.js에서 npm 패키지를 프로젝트에 추가하는 명령어입니다.
 둘 다 외부 라이브러리를 프로젝트에 설치해서 사용할 수 있게 해주는 역할을 합니다.
 결과의 VerificationStatus가 Success면 인증이 완료된 것입니다.
 
 
-LocalStack에서는 실제 인증 메일이 오지 않으니, 위 명령어 결과만 확인하면 충분합니다.
+
