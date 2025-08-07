@@ -1,6 +1,6 @@
-# Training Source : https://roadmap.sh/
+# Training Source: https://roadmap.sh/
 
-## Python concepts
+## Python 
 
 ```python
 ### List comprehension
