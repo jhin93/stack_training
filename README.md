@@ -124,7 +124,7 @@ print(unzipped_ages)   # 출력: (25, 30, 35)
 
 
 # externally-managed-environment 에러.
-"""
+'''
 (base) ➜  youtube-api-test git:(master) ✗ pip3 install google-api-python-client google-auth-oauthlib google-auth-httplib2
 
 error: externally-managed-environment
@@ -181,11 +181,7 @@ python3 -m venv venv
 source venv/bin/activate
 3. Install packages safely
 pip install fastapi uvicorn
-"""
-
-
-
-
+'''
 
 
 
