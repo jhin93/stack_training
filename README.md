@@ -120,6 +120,76 @@ paired = list(zip(names, ages))
 unzipped_names, unzipped_ages = zip(*paired)
 print(unzipped_names)  # 출력: ('Alice', 'Bob', 'Charlie')
 print(unzipped_ages)   # 출력: (25, 30, 35)
+
+
+
+# externally-managed-environment 에러.
+
+(base) ➜  youtube-api-test git:(master) ✗ pip3 install google-api-python-client google-auth-oauthlib google-auth-httplib2
+
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─> To install Python packages system-wide, try brew install
+    xyz, where xyz is the package you are trying to
+    install.
+    
+    If you wish to install a Python library that isn't in Homebrew,
+    use a virtual environment:
+    
+    python3 -m venv path/to/venv
+    source path/to/venv/bin/activate
+    python3 -m pip install xyz
+    
+    If you wish to install a Python application that isn't in Homebrew,
+    it may be easiest to use 'pipx install xyz', which will manage a
+    virtual environment for you. You can install pipx with
+    
+    brew install pipx
+    
+    You may restore the old behavior of pip by passing
+    the '--break-system-packages' flag to pip, or by adding
+    'break-system-packages = true' to your pip.conf file. The latter
+    will permanently disable this error.
+    
+    If you disable this error, we STRONGLY recommend that you additionally
+    pass the '--user' flag to pip, or set 'user = true' in your pip.conf
+    file. Failure to do this can result in a broken Homebrew installation.
+    
+    Read more about this behavior here: <https://peps.python.org/pep-0668/>
+
+note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
+hint: See PEP 668 for the detailed specification.
+(base) ➜  youtube-api-test git:(master) ✗ 
+
+# Cause:  
+Why create a virtual environment?  
+1. Package isolation: Different versions of libraries can be used for each project.  
+2. System protection: Does not affect the system Python.  
+3. Dependency management: Install only the packages needed for each project.  
+
+Relation to macOS security policies:  
+Since macOS Monterey (12.3), **System Integrity Protection (SIP)** has been strengthened:  
+- System Python protection: Restricts direct package installation to /usr/bin/python3.  
+- Externally-managed-environment error: Error occurs during pip install.  
+- Homebrew Python also affected: Prevents system-level installations.
+
+# Solution
+1. Create a virtual environment
+python3 -m venv venv
+2. Activate virtual environment
+source venv/bin/activate
+3. Install packages safely
+pip install fastapi uvicorn
+
+
+
+
+
+
+
+
+
 ```
 
 ## AWS 
