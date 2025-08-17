@@ -2,7 +2,7 @@
 ## Devops project
 #### 1. server stats (https://roadmap.sh/projects/server-stats)
 
-## How to Run Script
+#### How to Run Script
 
 1. **Clone the repository**
    ```shell
