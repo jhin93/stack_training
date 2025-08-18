@@ -12,3 +12,5 @@
 2. Run the script
    ```shell
    sh devops/server-stats.sh
+
+## Python
