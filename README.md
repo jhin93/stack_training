@@ -13,4 +13,4 @@
    ```shell
    sh devops/server-stats.sh
 
-## Python
+## Python training
