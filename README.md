@@ -266,4 +266,23 @@ class Program
    - **기능**: `WriteLine()`은 각 출력 후 줄 바꿈이 필요한 경우에 유용하며, `Write()`는 연속적인 출력이 필요한 경우에 적합합니다. `{0}`는 변수의 자리 표시자로 사용됩니다.
    - **예제**: `Console.WriteLine("The userInput is {0}", userInput);`는 `userInput` 값을 출력하고 새 줄을 추가하며, `{0}`은 `userInput` 값으로 대체됩니다.
 
-이 메서드들은 C#에서 콘솔 기반 응용 프로그램에서 사용자 상호작용을 구현하는 데 필수적인 도구입니다.
+```C#
+// .Read() 예시: 한 글자를 입력받아 유니코드 값 출력
+int ch = Console.Read();
+Console.WriteLine("입력한 문자의 유니코드 값: " + ch);
+
+// .ReadLine() 예시: 한 줄을 입력받아 그대로 출력
+string line = Console.ReadLine();
+Console.WriteLine("입력한 문자열: " + line);
+
+// .ReadKey() 예시: 아무 키나 누르면 해당 키 정보 출력
+Console.WriteLine("아무 키나 누르세요.");
+ConsoleKeyInfo keyInfo = Console.ReadKey();
+Console.WriteLine("\n누른 키: " + keyInfo.Key);
+
+// .Write() 예시: 줄바꿈 없이 출력
+Console.Write("줄바꿈 없이 출력합니다.");
+
+// .WriteLine() 예시: 줄바꿈과 함께 출력
+Console.WriteLine("줄바꿈과 함께 출력합니다.");
+```
