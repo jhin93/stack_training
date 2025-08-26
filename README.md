@@ -215,3 +215,31 @@ class Program
     }
 }
 ```
+
+#### Boxing, Unboxing
+```C#
+using System;
+using System.Collections;
+
+class Program
+{
+    static void Main()
+    {
+        // ArrayList 생성
+        ArrayList list = new ArrayList();
+        
+        // int 값을 boxing하여 추가
+        int num = 42;
+        object boxed = num; // Boxing
+        list.Add(boxed);
+        list.Add(100);     // 자동 Boxing
+        list.Add("Hello"); // 문자열 (이미 참조 형식)
+
+        // ArrayList 출력
+        foreach (var item in list)
+        {
+            Console.WriteLine(item);
+        }
+    }
+}
+```
