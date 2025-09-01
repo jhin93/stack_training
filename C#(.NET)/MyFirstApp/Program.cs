@@ -6,10 +6,15 @@ namespace MyFirstApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("What's your name?");
-            string name = Console.ReadLine() ?? "";
+            Person person = new Person("John", 32);
+            person.DisplayInfo();
 
-            Console.WriteLine($"Hi, {name}!");
+            person.Name = "Wick";
+            person.Age = 40;
+            person.DisplayInfo();
+
+            person.Age = -10;
+            person.DisplayInfo();
         }
     }
 }
