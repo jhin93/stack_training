@@ -169,7 +169,7 @@ print(unzipped_ages)   # 출력: (25, 30, 35)
 #### Constructor : public Student(string name, int rollNumber, double grade)
 #### Object: John doe, Nabin
 
-```C#
+```csharp
 using System;
 
 namespace StudentDemo
@@ -221,7 +221,7 @@ namespace StudentDemo
 ```
 
 #### multi-dimensional array
-```C#
+```csharp
 using System;
 
 namespace ConsoleApp2
@@ -254,7 +254,7 @@ double[,] array = new double[,] { { 10.0, 11.2 }, { 38.1, 0.0 } };
 
 #### pass parameter by reference(ref)
 메소드로 원래 존재했던 변수를 변경하는 것. ref(참조)를 통해 원본 변수를 변경하는 것. 원본 변수에 초기값 필요
-```C#
+```csharp
 using System;
 
 namespace ReferenceParameterDemo
@@ -286,7 +286,7 @@ namespace ReferenceParameterDemo
 
 #### pass parameter by output(out)
 out 키워드는 빈 변수에 값을 전달 (초기값 불필요, 메서드 내에서 반드시 설정).
-```C#
+```csharp
 using System;
 
 namespace OutParameterDemo
@@ -363,7 +363,7 @@ class Program
 ```
 
 #### Boxing, Unboxing
-```C#
+```csharp
 using System;
 using System.Collections;
 
@@ -390,10 +390,45 @@ class Program
 }
 ```
 
+```csharp
+List<int> numbers = new List<int> { 1, 2, 3 };
+
+// 지연 실행
+var query = numbers.Where(x => x > 1);
+numbers.Add(4); // 새 데이터 추가
+Console.WriteLine(query.Count()); // 3개 (2, 3, 4)
+
+// 즉시 실행  
+var list = numbers.Where(x => x > 1).ToList();
+numbers.Add(5); // 새 데이터 추가
+Console.WriteLine(list.Count); // 4개 (2, 3, 4만, 5는 포함 안됨)
+```
+
+LINQ
+```csharp
+LINQ(Language Integrated Query)는 C#에서 데이터를 쿼리(query)하는 강력한 도구야. 데이터를 쉽게 필터링, 정렬, 그룹화하거나 변환할 수 있도록 도와주는 문법으로, 실무에서 리스트, 배열, 데이터베이스 같은 데이터 소스를 다룰 때 자주 쓰여. SQL 비슷하지만 C# 코드 안에서 자연스럽게 사용할 수 있는 게 특징이야.
+
+### 핵심 포인트
+- **목적**: `List<T>`, 배열, XML, 데이터베이스 같은 데이터 소스에서 원하는 데이터를 간결하게 추출/조작.
+- **주요 메서드**:
+  - `Where`: 조건에 맞는 데이터 필터링 (예: `list.Where(x => x.Age > 20)`).
+  - `Select`: 데이터 변환 또는 특정 속성 선택 (예: `list.Select(x => x.Name)`).
+  - `OrderBy`: 데이터 정렬 (예: `list.OrderBy(x => x.Name)`).
+  - `GroupBy`, `Sum`, `Average` 등: 그룹화, 집계 등 다양한 작업 가능.
+- **문법**: 두 가지 스타일이 있어.
+  - **메서드 구문**: `list.Where(p => p.Age < 30).OrderBy(p => p.Name)`.
+  - **쿼리 구문**: SQL 비슷한 형태, 예: `from p in list where p.Age < 30 orderby p.Name select p`.
+- **실무 활용**: 데이터베이스 쿼리, 리스트 필터링, 데이터 분석 등에서 시간 절약과 가독성 향상에 도움.
+
+### 간단한 예시
+var numbers = new List<int> { 1, 2, 3, 4, 5 };
+var evenNumbers = numbers.Where(n => n % 2 == 0).ToList(); // 2, 4
+```
+
 #### C# 주요 연산자 (Common Operators)
 
 **산술 연산자 (Arithmetic Operators)**
-```C#
+```csharp
 int a = 10, b = 3;
 Console.WriteLine(a + b);  // 13 (덧셈)
 Console.WriteLine(a - b);  // 7  (뺄셈)
@@ -403,7 +438,7 @@ Console.WriteLine(a % b);  // 1  (나머지)
 ```
 
 **비교 연산자 (Comparison Operators)**
-```C#
+```csharp
 int x = 5, y = 10;
 Console.WriteLine(x == y);  // False (같음)
 Console.WriteLine(x != y);  // True  (다름)
@@ -414,7 +449,7 @@ Console.WriteLine(x >= y);  // False (크거나 같음)
 ```
 
 **논리 연산자 (Logical Operators)**
-```C#
+```csharp
 bool p = true, q = false;
 Console.WriteLine(p && q);  // False (AND)
 Console.WriteLine(p || q);  // True  (OR)
@@ -422,7 +457,7 @@ Console.WriteLine(!p);      // False (NOT)
 ```
 
 **할당 연산자 (Assignment Operators)**
-```C#
+```csharp
 int num = 10;
 num += 5;   // num = num + 5  (15)
 num -= 3;   // num = num - 3  (12)
@@ -432,7 +467,7 @@ num %= 5;   // num = num % 5  (1)
 ```
 
 **증감 연산자 (Increment/Decrement)**
-```C#
+```csharp
 // 전위 증가 (++i): 먼저 증가시킨 후 값을 반환
 int i = 5;
 int result1 = ++i;  // i를 6으로 증가시킨 후 result1에 6 할당
@@ -461,7 +496,7 @@ for (int m = 0; m < 3; m++)  // 후위 증가 사용
 ```
 
 **비트 연산자 (Bitwise Operators)**
-```C#
+```csharp
 int a = 12;  // 1100 (이진수)
 int b = 10;  // 1010 (이진수)
 
@@ -499,7 +534,7 @@ bool canExecute = (userPerm & Permission.Execute) != 0;   // false
 ```
 
 **복합 할당 비트 연산자 (Compound Bitwise Assignment)**
-```C#
+```csharp
 int x = 12;  // 1100
 x &= 10;     // x = x & 10, 결과: 8 (1000)
 x |= 5;      // x = x | 5,  결과: 13 (1101)
@@ -509,14 +544,14 @@ x >>= 2;     // x = x >> 2, 결과: 7 (111)
 ```
 
 **삼항 연산자 (Ternary Operator)**
-```C#
+```csharp
 int age = 20;
 string result = age >= 18 ? "성인" : "미성년자";
 Console.WriteLine(result);  // "성인"
 ```
 
 **null 병합 연산자 (Null-Coalescing Operators)**
-```C#
+```csharp
 string name = null;
 string displayName = name ?? "Unknown";  // null이면 "Unknown" 사용
 Console.WriteLine(displayName);  // "Unknown"
@@ -570,7 +605,7 @@ Console.WriteLine(length);   // null
    - **기능**: `WriteLine()`은 각 출력 후 줄 바꿈이 필요한 경우에 유용하며, `Write()`는 연속적인 출력이 필요한 경우에 적합합니다. `{0}`는 변수의 자리 표시자로 사용됩니다.
    - **예제**: `Console.WriteLine("The userInput is {0}", userInput);`는 `userInput` 값을 출력하고 새 줄을 추가하며, `{0}`은 `userInput` 값으로 대체됩니다.
 
-```C#
+```csharp
 // .Read() 예시: 한 글자를 입력받아 유니코드 값 출력
 int ch = Console.Read();
 Console.WriteLine("입력한 문자의 유니코드 값: " + ch);
