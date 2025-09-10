@@ -1,0 +1,37 @@
+이 프로젝트는 cloudrivedale(https://www.cloudriverdale.com.au/) 이라는 회사의 면접을 준비하기 위한 프로젝트이다. 아래 키워드들을 다음주까지 학습하고 면접을 준비하는 걸 목표로 한다.
+
+======== important ========
+1. jwt and rest api and postgresql is important
+2. and also you should know about MCP and its related development agentic AI development
+
+cloudriverdale 회사 인터뷰 키워드
+
+Spring Boot (Java)
+* Dependency Injection
+* Inversion of Control (IoC)
+* Spring Boot Annotations (@RestController, @Autowired, etc.)
+* Spring Data JPA / Hibernate
+* Entity, Repository, Service layers
+* REST API endpoints
+* Application.properties / YAML configuration
+* Spring Security / JWT
+* Exception handling (@ControllerAdvice)
+* Maven / Gradle
+* Microservices
+
+Node.js (JavaScript/TypeScript)
+* Event-driven / Non-blocking I/O
+* npm / yarn
+* Express.js
+* Middleware
+* REST API routes
+* Async / Await, Promises
+* Error handling
+* JWT authentication
+* Environment variables (dotenv)
+* Database integration (MongoDB, PostgreSQL, etc.)
+* WebSockets
+
+Salesforce CRM 기본 지식(구현, 통합, 데이터 관리)
+
+
