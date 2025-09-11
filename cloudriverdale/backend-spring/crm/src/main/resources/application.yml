@@ -25,19 +25,29 @@ spring:
     
   # 데이터베이스 설정
   datasource:
-    url: jdbc:postgresql://localhost:5432/cloudriverdale_crm_db # PostgreSQL 연결 URL. JDBC URL 형식 (jdbc:postgresql://호스트:포트/데이터베이스명)
-    username: cloudriverdale_datasource_jin
-    password: wlsrud20
+    url: jdbc:postgresql://localhost:5432/cloudriverdale_crm # PostgreSQL 연결 URL. JDBC URL 형식 (jdbc:postgresql://호스트:포트/데이터베이스명)
+    username: crm_user
+    password: wlsrud20@
     driver-class-name: org.postgresql.Driver # PostgreSQL 드라이버 클래스 이름
+    
+    # HikariCP 커넥션 풀 설정
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
 
   jpa:
     hibernate:
-      ddl-auto: create-drop # 개발 : create-drop, 운영: validate
+      ddl-auto: update # 개발 : create-drop, 운영: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect # PostgreSQL Dialect 설정
         format_sql: true # SQL 쿼리 포맷 설정
     show-sql: true # SQL 쿼리 출력 설정
+      
+  
 
 # 로깅 설정
 logging:
