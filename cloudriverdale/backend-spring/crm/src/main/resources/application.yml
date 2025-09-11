@@ -1,0 +1,49 @@
+
+# JPA/Hibernate 설정. JPA - 인터페이스 규격: 실제 구현이 아닌 "이렇게 만들어야 한다"는 규칙. Hibernate - JPA의 실제 구현체 (구현 제품).
+#      - JPA = USB 규격 (인터페이스)
+#      - Hibernate = 삼성 USB 메모리 (실제 제품)
+#      - EclipseLink, OpenJPA = LG, 샌디스크 USB (다른 제품들)  
+#  dialect (방언):
+#    - 각 DB마다 SQL 문법이 조금씩 다름
+#    - MySQL: AUTO_INCREMENT
+#    - PostgreSQL: SERIAL
+#    - Hibernate가 DB에 맞는 SQL 자동 생성
+
+#  왜 중요한가?
+#  - SQL 작성 없이 Java 코드로 DB 작업
+#  - 데이터베이스 변경 시 dialect만 바꾸면 됨
+#  - 개발 생산성 크게 향상
+
+# 서버 설정
+server:
+  port: 8080 # 애플리케이션이 실행될 포트
+
+#  Spring 애플리케이션 설정
+spring:
+  application:
+    name: cloudriverdale-crm # 애플리케이션 이름
+    
+  # 데이터베이스 설정
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cloudriverdale_crm_db # PostgreSQL 연결 URL. JDBC URL 형식 (jdbc:postgresql://호스트:포트/데이터베이스명)
+    username: cloudriverdale_datasource_jin
+    password: wlsrud20
+    driver-class-name: org.postgresql.Driver # PostgreSQL 드라이버 클래스 이름
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # 개발 : create-drop, 운영: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect # PostgreSQL Dialect 설정
+        format_sql: true # SQL 쿼리 포맷 설정
+    show-sql: true # SQL 쿼리 출력 설정
+
+# 로깅 설정
+logging:
+  level:
+    root: INFO
+    com.cloudriverdale.crm: DEBUG # 우리 패키지는 DEBUG 레벨
+    org.springframework.web: DEBUG
+    org.hibernate: DEBUG
+  
