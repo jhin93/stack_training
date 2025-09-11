@@ -1,5 +1,7 @@
 # CloudRiverdale Internship Preparation Project
 
+이 프로젝트는 cloudrivedale(https://www.cloudriverdale.com.au/) 이라는 회사의 면접을 준비하기 위한 프로젝트이다. 아래 키워드들을 다음주까지 학습하고 면접을 준비하는 걸 목표로 한다.
+
 ## Project Overview
 **CRM Integrated Microservices Platform** - A microservices architecture project that integrates customer management systems with Salesforce CRM
 
