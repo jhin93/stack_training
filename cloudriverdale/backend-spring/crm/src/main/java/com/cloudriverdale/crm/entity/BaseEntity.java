@@ -1,3 +1,11 @@
+package com.cloudriverdale.crm.entity;
+import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.LocalDateTime;
+
+
 // Entity 패키지와 BaseEntity 클래스의 역할
 // 
 //   1. Entity 패키지의 역할
@@ -100,7 +108,32 @@ public abstract class BaseEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;  // 마지막 수정 시간 (예: 2024-12-27 15:45:30)
     
-    // TODO: Lombok 사용 시 @Getter @Setter 어노테이션으로 대체 가능
-    // 또는 직접 getter/setter 메소드 구현 필요
-    // getter/setter
+    // 1. id 필드의 getter/setter
+    public Long getId() { // id 필드가 private Long id;로 선언되어 있으므로, getter도 같은 타입 Long을 반환
+      return id;  // 현재 id 값을 반환
+    }
+    
+    public void setId(Long id) {
+        this.id = id;  // 전달받은 값을 id 필드에 저장
+    }
+    
+    // 2. createdAt 필드의 getter/setter
+    public LocalDateTime getCreatedAt() {
+        return createdAt;  // 생성 시간 반환
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;  // 생성 시간 설정
+    }
+    
+    // 3. updatedAt 필드의 getter/setter
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;  // 수정 시간 반환
+    }
+    
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;  // 수정 시간 설정
+    }
+
+
 }

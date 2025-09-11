@@ -40,7 +40,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update # 개발 : create-drop, 운영: validate
+      ddl-auto: create # 개발 : create-drop, 운영: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect # PostgreSQL Dialect 설정
