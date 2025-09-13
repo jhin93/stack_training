@@ -1,20 +1,30 @@
   package com.cloudriverdale.crm.entity;
 
   import jakarta.persistence.*;
+  import jakarta.validation.constraints.*;
+
 
   @Entity  // 이 클래스가 JPA 엔티티임을 표시 (customer 테이블로 매핑됨)
   @Table(name = "customers")  // 테이블 이름 명시적 지정 (선택사항)
   public class Customer extends BaseEntity {  // BaseEntity 상속받아 id, createdAt, updatedAt 자동 포함
 
       // Customer만의 고유 필드들
+      @NotBlank(message = "Name is required")
+      @Size(min = 2, max = 100)
       @Column(nullable = false, length = 100)
-      private String name;  // 고객 이름
+      private String name;
 
+
+      @Email(message = "Invalid email format")
+      @NotBlank(message = "Email is required")
       @Column(unique = true, nullable = false)
-      private String email;  // 고객 이메일 (중복 불가)
+      private String email;
 
+
+      @Pattern(regexp = "^\\d{3}-\\d{4}-\\d{4}$", message = "phoneNumber format xxx-xxxx-xxxx")
       @Column(length = 20)
-      private String phoneNumber;  // 전화번호
+      private String phoneNumber;
+
 
       @Column(columnDefinition = "TEXT")
       private String address;  // 주소 (긴 텍스트)
