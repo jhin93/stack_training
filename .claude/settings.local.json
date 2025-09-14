@@ -11,7 +11,8 @@
       "Bash(./mvnw:*)",
       "Bash(touch:*)",
       "Bash(echo $SHELL)",
-      "Bash(stty:*)"
+      "Bash(stty:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []
