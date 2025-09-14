@@ -18,6 +18,9 @@ Spring Boot (Java)
 * Exception handling (@ControllerAdvice)
 * Maven / Gradle
 * Microservices
+* crudRepository
+* jpaRepository
+* query method
 
 Node.js (JavaScript/TypeScript)
 * Event-driven / Non-blocking I/O
