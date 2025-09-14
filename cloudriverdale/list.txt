@@ -37,4 +37,14 @@ Node.js (JavaScript/TypeScript)
 
 Salesforce CRM 기본 지식(구현, 통합, 데이터 관리)
 
+Salesforce API
+https://developer.salesforce.com/developer-centers/integration-apis
 
+Slack API
+https://docs.slack.dev/
+
+Xero api
+https://developer.xero.com/documentation/api/accounting/overview
+
+Paypal API
+https://developer.paypal.com/api/rest/
