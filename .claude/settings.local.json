@@ -6,7 +6,10 @@
       "Bash(psql:*)",
       "Bash(git reset:*)",
       "Bash(mv:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(rmdir:*)",
+      "Bash(./mvnw:*)",
+      "Bash(touch:*)"
     ],
     "deny": [],
     "ask": []
