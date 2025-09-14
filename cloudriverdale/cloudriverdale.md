@@ -13,7 +13,7 @@
    - Spring의 핵심 원칙
    - 제어의 역전 개념 이해
 
-2. **Dependency Injection**
+2. **Dependencyv Injection**
    - IoC의 구현 방식
    - 의존성 주입 패턴
 

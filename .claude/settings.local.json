@@ -9,7 +9,9 @@
       "Bash(mkdir:*)",
       "Bash(rmdir:*)",
       "Bash(./mvnw:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(echo $SHELL)",
+      "Bash(stty:*)"
     ],
     "deny": [],
     "ask": []
