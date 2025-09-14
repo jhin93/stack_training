@@ -1,6 +1,6 @@
 # Cloudriverdale 인턴쉽 면접 준비 학습 가이드
 
-## 핵심 우선순위
+## 핵심 우선순위 Core Skills
 1. **JWT and REST API and PostgreSQL** (최우선)
 2. **MCP and its related development agentic AI development**
 
@@ -135,7 +135,3 @@
 
 ---
 
-## 학습 팁
-1. 각 개념을 실습 프로젝트로 구현해보기
-2. JWT + REST API + PostgreSQL 조합으로 풀스택 프로젝트 만들기
-3. MCP (Model Context Protocol) 관련 자료 조사 및 AI 에이전트 개발 이해
