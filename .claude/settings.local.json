@@ -12,7 +12,8 @@
       "Bash(touch:*)",
       "Bash(echo $SHELL)",
       "Bash(stty:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []
