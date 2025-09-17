@@ -3,7 +3,8 @@
 ### 프로젝트 개요
 **"Simple Book Library API"** - JWT 인증을 사용하는 도서 관리 시스템 REST API
 - 기술 스택: Spring Boot + Spring Security + Spring Data JPA + PostgreSQL + JWT
-- 최소 기능: 회원가입, 로그인, 도서 CRUD, 도서 대출/반납
+- 핵심 기능: 회원가입, 로그인, 도서 CRUD (간소화됨)
+- 학습 중점: Spring Boot 핵심 개념 체험
 
 ### 실습 진행 순서
 
@@ -51,27 +52,35 @@
        └── application.properties
    ```
 
-#### Step 2: 기초 개념 구현 (1시간)
-1. **IoC와 Dependency Injection 실습**
-   - @Component, @Service, @Repository 어노테이션 사용
-   - @Autowired로 의존성 주입
+#### Step 2: 설정 파일 관리 (45분)
+1. **application.yml (YAML 설정)**
+   ```yaml
+   spring:
+     datasource:
+       url: jdbc:postgresql://localhost:5432/librarydb
+       username: ${DB_USERNAME:defaultuser}
+       password: ${DB_PASSWORD:defaultpass}
+     jpa:
+       hibernate:
+         ddl-auto: update
+       properties:
+         hibernate:
+           dialect: org.hibernate.dialect.PostgreSQLDialect
+       show-sql: true
 
-2. **application.properties 설정**
-   ```properties
-   # 데이터베이스 설정
-   spring.datasource.url=jdbc:postgresql://localhost:5432/librarydb
-   spring.datasource.username=your-username
-   spring.datasource.password=your-password
-
-   # JPA 설정
-   spring.jpa.hibernate.ddl-auto=update
-   spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-   spring.jpa.show-sql=true
-
-   # JWT 설정
-   jwt.secret=your-secret-key
-   jwt.expiration=3600000
+   jwt:
+     secret: ${JWT_SECRET:your-secret-key}
+     expiration: 3600000
    ```
+
+2. **환경별 설정 파일**
+   - `application-dev.yml` (개발 환경)
+   - `application-prod.yml` (운영 환경)
+   - 실행 시: `java -jar app.jar --spring.profiles.active=dev`
+
+3. **IoC와 Dependency Injection**
+   - @Component, @Service, @Repository 차이점 이해
+   - @Autowired vs 생성자 주입
 
 #### Step 3: 엔티티와 Repository 구현 (45분)
 1. **User 엔티티**
@@ -119,9 +128,18 @@
    }
    ```
 
-3. **JpaRepository 인터페이스 구현**
-   - UserRepository: findByEmail() 메서드
-   - BookRepository: findByAvailable(), findByBorrowedBy() 메서드
+3. **Repository 계층 구조 이해**
+   ```java
+   // CrudRepository 기본 메서드 이해
+   public interface BookRepository extends CrudRepository<Book, Long> {
+       // save(), findById(), findAll(), deleteById() 등 기본 제공
+   }
+
+   // JpaRepository 확장 (페이징, 정렬 추가)
+   public interface UserRepository extends JpaRepository<User, Long> {
+       Optional<User> findByEmail(String email);  // Query Method
+   }
+   ```
 
 #### Step 4: Service 계층 구현 (1시간)
 1. **AuthService**
@@ -137,20 +155,37 @@
    - 도서 CRUD 작업
    - 도서 대출/반납 로직
 
-#### Step 5: Controller와 REST API 구현 (1시간 30분)
-1. **AuthController**
+#### Step 5: Controller와 REST API 구현 (1시간)
+1. **매핑 어노테이션 상세 학습**
+   ```java
+   @RestController  // @Controller + @ResponseBody
+   @RequestMapping("/api/books")  // 기본 경로 설정
+   public class BookController {
+
+       @GetMapping  // GET /api/books
+       public List<Book> getAllBooks() { }
+
+       @GetMapping("/{id}")  // GET /api/books/{id}
+       public Book getBook(@PathVariable Long id) { }
+
+       @PostMapping  // POST /api/books
+       public Book createBook(@RequestBody BookDto bookDto) { }
+
+       @PutMapping("/{id}")  // PUT /api/books/{id}
+       public Book updateBook(@PathVariable Long id, @RequestBody BookDto bookDto) { }
+
+       @DeleteMapping("/{id}")  // DELETE /api/books/{id}
+       public void deleteBook(@PathVariable Long id) { }
+   }
+   ```
+
+2. **간소화된 엔드포인트** (복잡도 감소)
    - POST /api/auth/register - 회원가입
    - POST /api/auth/login - 로그인
-
-2. **BookController** (모든 엔드포인트 JWT 인증 필요)
-   - GET /api/books - 모든 도서 조회
-   - GET /api/books/available - 대출 가능한 도서 조회
-   - GET /api/books/{id} - 특정 도서 조회
-   - POST /api/books - 새 도서 등록 (ADMIN 권한)
-   - PUT /api/books/{id} - 도서 정보 수정 (ADMIN 권한)
-   - DELETE /api/books/{id} - 도서 삭제 (ADMIN 권한)
-   - POST /api/books/{id}/borrow - 도서 대출
-   - POST /api/books/{id}/return - 도서 반납
+   - GET /api/books - 도서 목록 조회
+   - POST /api/books - 도서 추가 (인증 필요)
+   - GET /api/books/{id} - 도서 상세 조회
+   - DELETE /api/books/{id} - 도서 삭제 (인증 필요)
 
 #### Step 6: Spring Security와 JWT 설정 (1시간 30분)
 1. **SecurityConfig**
@@ -166,32 +201,37 @@
    - @ControllerAdvice로 전역 예외 처리
    - 표준화된 에러 응답 형식
 
-#### Step 7: 테스트 및 검증 (45분)
-1. **Postman으로 API 테스트**
+#### Step 7: 테스트 및 검증 (30분)
+1. **간단한 테스트 시나리오**
    - 회원가입 → 로그인 → JWT 토큰 획득
-   - Authorization 헤더에 Bearer 토큰 설정
-   - 도서 CRUD 작업 테스트
-   - 도서 대출/반납 테스트
+   - 토큰 없이 API 호출 (401 에러 확인)
+   - 토큰으로 도서 조회/추가/삭제
 
-2. **테스트 시나리오**
-   - 일반 사용자: 도서 조회, 대출, 반납
-   - 관리자: 도서 등록, 수정, 삭제
-   - 인증 실패 케이스
-   - 이미 대출된 도서 대출 시도
+2. **환경별 실행 테스트**
+   ```bash
+   # 개발 환경 실행
+   mvn spring-boot:run -Dspring.profiles.active=dev
+
+   # 운영 환경 실행
+   java -jar target/book-library.jar --spring.profiles.active=prod
+   ```
 
 ### 학습 포인트 체크리스트
 - [ ] IoC와 DI 원리 이해
-- [ ] Spring Boot Annotation 활용
-- [ ] JPA Entity와 Repository 패턴
+- [ ] Spring Boot 주요 Annotation 활용 (@RestController, @Service, @Repository)
+- [ ] HTTP 매핑 어노테이션 완벽 이해 (@GetMapping, @PostMapping 등)
+- [ ] CrudRepository vs JpaRepository 계층 구조
+- [ ] Query Method 작성법
 - [ ] Service 계층의 역할과 책임
 - [ ] REST API 설계 원칙 적용
 - [ ] Spring Security 동작 방식
 - [ ] JWT 토큰 기반 인증 구현
 - [ ] @ControllerAdvice를 통한 예외 처리
 - [ ] Maven을 통한 의존성 관리
-- [ ] application.properties 설정 관리
+- [ ] YAML 설정 파일 작성
+- [ ] Spring Profiles를 통한 환경별 설정 관리
 
-### 예상 완성 시간: 7시간
+### 예상 완성 시간: 5-6시간 (복잡도 감소)
 
 ### 고급 학습 과제 (선택사항)
 1. **Query Method와 @Query 활용**
