@@ -13,7 +13,8 @@
       "Bash(echo $SHELL)",
       "Bash(stty:*)",
       "Bash(tree:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

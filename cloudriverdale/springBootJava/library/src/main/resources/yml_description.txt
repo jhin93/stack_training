@@ -1,0 +1,28 @@
+⏺ 3개 YAML 파일의 역할 설명
+
+  1. application.yml (기본 설정)
+
+  - 역할: 모든 환경에서 공통으로 사용되는 기본 설정
+  - 언제 사용: 아무 옵션 없이 앱을 실행할 때
+  - 특징:
+    - 개발할 때 주로 사용
+    - 다른 profile 지정 안하면 이 설정이 적용됨
+    - ${DB_USERNAME:postgres} = 환경변수 없으면 postgres 사용
+
+  2. application-dev.yml (개발 환경)
+
+  - 역할: 개발 팀이 함께 사용하는 개발 서버 설정
+  - 언제 사용: --spring.profiles.active=dev 옵션으로 실행할 때
+  - 특징:
+    - ddl-auto: create-drop = 서버 재시작시 DB 초기화 (테스트 편리)
+    - SQL 로그 출력 (디버깅용)
+    - 별도 포트 (8081) 사용
+
+  3. application-prod.yml (운영 환경)
+
+  - 역할: 실제 서비스 배포시 사용하는 설정
+  - 언제 사용: --spring.profiles.active=prod 옵션으로 실행할 때
+  - 특징:
+    - 모든 값을 환경변수로만 받음 (보안)
+    - ddl-auto: validate = DB 스키마 변경 안함 (안전)
+    - SQL 로그 안 보임 (성능)

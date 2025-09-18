@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL}  # 운영 환경에서는 환경변수로만
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate  # 스키마 검증만, 변경 안함
+    show-sql: false  # 운영에서는 SQL 로그 끄기
+
+server:
+  port: ${PORT:8080}
+
