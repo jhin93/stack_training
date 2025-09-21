@@ -219,7 +219,71 @@
 ### 학습 포인트 체크리스트
 
 #### 1. Spring Boot 기초 개념
-- [ ] 1-1. IoC와 DI 원리 이해
+- [x] 1-1. IoC와 DI 원리 이해
+  🎯 IoC/DI를 아주 쉽게 다시 설명
+
+  🍕 피자집 비유로 이해하기
+
+  전통적인 방식 (IoC 없이):
+  // 주방장이 직접 모든 재료를 준비
+  public class 주방장 {
+  public void 피자만들기() {
+  도우 myDough = new 도우();      // 직접 만듦
+  치즈 myCheese = new 치즈();      // 직접 만듦  
+  토마토소스 mySauce = new 토마토소스(); // 직접 만듦
+
+          // 피자 만들기...
+      }
+  }
+
+  Spring 방식 (IoC/DI 사용):
+  @Service
+  public class 주방장 {
+  private final 도우 dough;        // Spring이 준비해줌
+  private final 치즈 cheese;       // Spring이 준비해줌
+  private final 토마토소스 sauce;   // Spring이 준비해줌
+
+      // Spring이 자동으로 재료를 주입해줌!
+      public 주방장(도우 dough, 치즈 cheese, 토마토소스 sauce) {
+          this.dough = dough;
+          this.cheese = cheese;
+          this.sauce = sauce;
+      }
+  }
+
+  🔍 우리 프로젝트로 보기
+
+  BookController는 BookService가 필요해요:
+
+  @RestController
+  public class BookController {
+  private final BookService bookService;
+
+      // Spring아, BookService 좀 줘!
+      // Spring: OK! 내가 만들어서 줄게!
+  }
+
+  Spring이 하는 일:
+    1. 앱 시작 → "어? @Service 붙은 BookService 발견!"
+    2. BookService 객체 만들어서 창고(Container)에 보관
+    3. "어? @RestController가 BookService 필요하네?"
+    4. 창고에서 꺼내서 자동으로 연결!
+
+  💡 핵심 정리
+
+  IoC = 제어의 역전
+    - Before: 내가 직접 new 해서 객체 만듦
+    - After: Spring이 알아서 만들어줌
+
+  DI = 의존성 주입
+    - Before: 내가 필요한 거 직접 만듦
+    - After: Spring이 필요한 거 자동으로 넣어줌
+
+  왜 좋은가?
+    1. 코드가 깔끔해짐 (new 안 써도 됨)
+    2. 테스트하기 쉬워짐 (가짜 객체로 바꿔치기 가능)
+    3. 유지보수 편함 (한 곳만 수정하면 됨)
+
 - [ ] 1-2. Spring Boot 주요 Annotation 활용 (@RestController, @Service, @Repository)
 
 #### 2. 프로젝트 설정 및 구성
