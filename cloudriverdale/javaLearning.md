@@ -285,6 +285,118 @@
     3. 유지보수 편함 (한 곳만 수정하면 됨)
 
 - [ ] 1-2. Spring Boot 주요 Annotation 활용 (@RestController, @Service, @Repository)
+  ⏺ 🎯 1-2. Spring Boot 주요 Annotation 활용
+
+  🏢 회사 조직도로 이해하기
+
+  Spring 어노테이션은 직책 명찰과 같습니다!
+
+  회사(Spring Application)
+  ├── 영업팀 (@RestController) - 고객 응대
+  ├── 기획팀 (@Service) - 비즈니스 로직
+  └── 자료팀 (@Repository) - 데이터 관리
+
+  1️⃣ @RestController (영업팀 = 고객 접점)
+
+⏺ @RestController = 영업사원 명찰
+@RestController  // "나는 고객 응대 담당입니다!"
+@RequestMapping("/api/books")  // "책 관련 문의는 여기로!"
+public class BookController {
+
+      @GetMapping  // "조회는 GET으로 오세요"
+      @PostMapping // "등록은 POST로 오세요"
+      @PutMapping  // "수정은 PUT으로 오세요"
+      @DeleteMapping // "삭제는 DELETE로 오세요"
+}
+
+🍔 햄버거 주문 비유:
+- 고객: "메뉴 보여주세요" → @GetMapping
+- 고객: "빅맥 주문할게요" → @PostMapping
+- 고객: "피클 빼주세요" → @PutMapping
+- 고객: "주문 취소할게요" → @DeleteMapping
+
+2️⃣ @Service (기획팀 = 비즈니스 로직)
+
+⏺ Read(src/main/java/com/example/library/service/BookService.java)
+⎿  Read 20 lines (ctrl+o to expand)
+
+⏺ @Service = 기획자 명찰
+@Service  // "나는 비즈니스 로직 담당입니다!"
+public class BookService {
+// 영업팀(Controller)의 요청을 받아
+// 실제 업무 처리 (도서 등록, 대출 규칙 확인 등)
+// 자료팀(Repository)에게 데이터 요청
+}
+
+📚 도서관 비유:
+- Controller: "손님이 책 빌리고 싶대요!"
+- Service: "잠깐, 이 손님 연체 없나? 대출 가능한가? OK, 빌려줘도 돼"
+- Repository: "네, DB에 기록했습니다"
+
+3️⃣ @Repository (자료팀 = 데이터 창고)
+
+⏺ Read(src/main/java/com/example/library/repository/BookRepository.java)
+⎿  Read 7 lines (ctrl+o to expand)
+
+⏺ @Repository = 창고 관리자 명찰
+public interface BookRepository extends CrudRepository<Book, Long> {
+// Spring이 자동으로 구현체 생성!
+// save() - 창고에 넣기
+// findById() - 창고에서 찾기
+// findAll() - 전부 꺼내기
+// deleteById() - 창고에서 빼기
+}
+
+🎭 전체 흐름 연극으로 보기
+
+고객: "책 목록 좀 보여주세요!"
+↓
+@RestController (접수직원): "네, 잠시만요. 책 목록 조회 부탁드려요~"
+↓
+@Service (중간관리자): "네, 창고에서 책 목록 가져올게요"
+↓
+@Repository (창고직원): "여기 책 목록입니다"
+↓
+@Service: "확인했습니다. 여기요"
+↓
+@RestController: "손님, 여기 책 목록입니다!"
+↓
+고객: "감사합니다!"
+
+🔥 추가 어노테이션 꿀팁
+
+@RequestBody - HTTP 요청의 본문을 Java 객체로 변환
+@PostMapping
+public Book createBook(@RequestBody BookDto bookDto) {
+// JSON → Java 객체 자동 변환!
+}
+
+@PathVariable - URL 경로의 변수를 받기
+@GetMapping("/{id}")  // /api/books/123
+public Book getBook(@PathVariable Long id) {
+// id = 123
+}
+
+@RequestParam - URL 쿼리 파라미터 받기
+@GetMapping("/search")  // /api/books/search?title=java
+public List<Book> search(@RequestParam String title) {
+// title = "java"
+}
+
+💡 핵심 정리
+
+| 어노테이션           | 역할         | 비유       |
+|-----------------|------------|----------|
+| @RestController | HTTP 요청 받기 | 고객 응대 직원 |
+| @Service        | 비즈니스 로직    | 기획/실무 직원 |
+| @Repository     | DB 접근      | 창고 관리자   |
+| @Component      | 범용 Bean    | 기타 직원    |
+
+왜 이렇게 나눴을까?
+1. 역할 분리: 각자 맡은 일만 집중
+2. 테스트 쉬움: 가짜 Service로 바꿔치기 가능
+3. 유지보수 편함: 어디를 고칠지 명확
+
 
 #### 2. 프로젝트 설정 및 구성
 - [ ] 2-1. Maven을 통한 의존성 관리
