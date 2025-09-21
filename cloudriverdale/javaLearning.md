@@ -217,19 +217,33 @@
    ```
 
 ### 학습 포인트 체크리스트
-- [ ] IoC와 DI 원리 이해
-- [ ] Spring Boot 주요 Annotation 활용 (@RestController, @Service, @Repository)
-- [ ] HTTP 매핑 어노테이션 완벽 이해 (@GetMapping, @PostMapping 등)
-- [ ] CrudRepository vs JpaRepository 계층 구조
-- [ ] Query Method 작성법
-- [ ] Service 계층의 역할과 책임
-- [ ] REST API 설계 원칙 적용
-- [ ] Spring Security 동작 방식
-- [ ] JWT 토큰 기반 인증 구현
-- [ ] @ControllerAdvice를 통한 예외 처리
-- [ ] Maven을 통한 의존성 관리
-- [ ] YAML 설정 파일 작성
-- [ ] Spring Profiles를 통한 환경별 설정 관리
+
+#### 1. Spring Boot 기초 개념
+- [ ] 1-1. IoC와 DI 원리 이해
+- [ ] 1-2. Spring Boot 주요 Annotation 활용 (@RestController, @Service, @Repository)
+
+#### 2. 프로젝트 설정 및 구성
+- [ ] 2-1. Maven을 통한 의존성 관리
+- [ ] 2-2. YAML 설정 파일 작성
+- [ ] 2-3. Spring Profiles를 통한 환경별 설정 관리
+
+#### 3. 데이터 계층 (JPA/Repository)
+- [ ] 3-1. CrudRepository vs JpaRepository 계층 구조
+- [ ] 3-2. Query Method 작성법
+
+#### 4. 비즈니스 로직 계층
+- [ ] 4-1. Service 계층의 역할과 책임
+
+#### 5. Web/API 계층
+- [ ] 5-1. HTTP 매핑 어노테이션 완벽 이해 (@GetMapping, @PostMapping 등)
+- [ ] 5-2. REST API 설계 원칙 적용
+
+#### 6. 보안 및 인증
+- [ ] 6-1. Spring Security 동작 방식
+- [ ] 6-2. JWT 토큰 기반 인증 구현
+
+#### 7. 예외 처리
+- [ ] 7-1. @ControllerAdvice를 통한 예외 처리
 
 ### 예상 완성 시간: 5-6시간 (복잡도 감소)
 
