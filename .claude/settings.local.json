@@ -14,7 +14,8 @@
       "Bash(stty:*)",
       "Bash(tree:*)",
       "Bash(rm:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebFetch(domain:www.geeksforgeeks.org)"
     ],
     "deny": [],
     "ask": []

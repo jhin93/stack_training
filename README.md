@@ -958,3 +958,39 @@ NAT 사용시:
 
 핵심: 공인 IP 1개로 수백, 수천 대의 내부 서버를 운영할 수 있음!
 
+## Java
+
+#### Annotation
+```java
+  // 어노테이션이 없다면 직접 작성해야 함
+  public class User {
+      private String name;
+
+      // Getter
+      public String getName() {
+          return name;
+      }
+
+      // Setter
+      public void setName(String name) {
+          this.name = name;
+      }
+
+      // 생성자들
+      public User() {}
+      public User(String name) {
+          this.name = name;
+      }
+  }
+
+  // 어노테이션 사용시
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public class User {
+      private String name;
+      // 끝! 위 코드들이 자동 생성됨
+  }
+
+```
