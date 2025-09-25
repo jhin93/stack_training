@@ -15,7 +15,8 @@
       "Bash(tree:*)",
       "Bash(rm:*)",
       "Bash(curl:*)",
-      "WebFetch(domain:www.geeksforgeeks.org)"
+      "WebFetch(domain:www.geeksforgeeks.org)",
+      "Bash(cargo:*)"
     ],
     "deny": [],
     "ask": []
