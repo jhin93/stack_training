@@ -184,6 +184,32 @@
 
 ---
 
-💡 **Tip**: 매주 학습한 내용을 블로그나 GitHub에 정리하여 학습 과정을 문서화하세요. 이는 취업 시 큰 장점이 됩니다.
+Rust Concept
+```rust
+// ⏺ Rust의 prelude는 모든 Rust 프로그램에 자동으로 import되는 표준 라이브러리의 기본 타입과
+//   트레이트 모음입니다.
+// 
+//   주요 특징
+// 
+//   자동 import: std::prelude::v1::*이 모든 모듈에 암시적으로 포함됩니다.
+// 
+//   포함된 주요 항목들:
+//   - 기본 타입: Option<T>, Result<T, E>
+//   - 트레이트: Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Debug, Display
+//   - 반복자: Iterator, IntoIterator, DoubleEndedIterator, ExactSizeIterator
+//   - 변환: From, Into, AsRef, AsMut
+//   - 메모리: Drop, Sized, Send, Sync
+//   - 문자열: ToString, &str, String
+//   - 벡터: Vec
+//   - 매크로: println!, eprintln!, format!, vec!
 
-🚀 **시작하기**: `cargo new hello_rust --bin` 명령으로 첫 프로젝트를 생성하고 시작하세요!
+  // prelude 덕분에 별도 import 없이 사용 가능
+  fn example() -> Option<String> {
+      let v = vec![1, 2, 3];  // vec! 매크로
+      Some("hello".to_string())  // Option, ToString
+  }
+
+  // 커스텀 prelude를 만들어 프로젝트 전체에서 공통으로 사용하는 타입들을 관리할 수도 있습니다.
+
+
+```
