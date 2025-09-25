@@ -16,7 +16,9 @@
       "Bash(rm:*)",
       "Bash(curl:*)",
       "WebFetch(domain:www.geeksforgeeks.org)",
-      "Bash(cargo:*)"
+      "Bash(cargo:*)",
+      "Bash(claude --version)",
+      "Read(//Users/kimjinkyeong/.nvm/versions/node/v22.13.1/lib/node_modules/@anthropic-ai/claude-code/**)"
     ],
     "deny": [],
     "ask": []

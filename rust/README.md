@@ -10,7 +10,7 @@
 
 ## 📚 Phase 1: 핵심 기본기 속성 (8주)
 
-### Part A: 공식 문서 완주 (5주)
+### Part A: 공식 문서 완주 (5주) https://doc.rust-kr.org/title-page.html
 **The Rust Programming Language 완독**
 - **1주차**: Ch 1-4 (시작하기, 추리 게임, 일반 개념, 소유권)
 - **2주차**: Ch 5-8 (구조체, 열거형, 패키지/크레이트, 컬렉션)
