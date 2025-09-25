@@ -18,7 +18,12 @@
       "WebFetch(domain:www.geeksforgeeks.org)",
       "Bash(cargo:*)",
       "Bash(claude --version)",
-      "Read(//Users/kimjinkyeong/.nvm/versions/node/v22.13.1/lib/node_modules/@anthropic-ai/claude-code/**)"
+      "Read(//Users/kimjinkyeong/.nvm/versions/node/v22.13.1/lib/node_modules/@anthropic-ai/claude-code/**)",
+      "Read(//Applications/**)",
+      "Read(//Users/kimjinkyeong/Library/Preferences/**)",
+      "Read(//Users/kimjinkyeong/Library/**)",
+      "Bash(ls:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
