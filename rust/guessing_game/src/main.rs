@@ -8,7 +8,8 @@ fn main() {
     let secret_number = rand::thread_rng().gen_range(1..=100);
     // 'rand::thread_rng()' gives a random number generator that is local to the current thread of execution and seeded by the operating system.
     // 'gen_range()' generates a random number in the range of 1 to 100(start..=end). It contains the start and end.
-    println!("The secret number is : {secret_number}");
+
+    // println!("The secret number is : {secret_number}");
 
     loop {
         println!("Please input your guess.");
@@ -24,7 +25,13 @@ fn main() {
             .expect("Failed to read line");
         // If the result is Err, expect() will print the error message and exit the program.
 
-        let guess: u32 = guess.trim().parse().expect("Please type a number!"); // Shadowing means the new variable 'guess' shadows the previous variable 'guess'.
+        let guess: u32 = match guess.trim().parse() { // 'parse' returns a Result. And the 'Result' is an enum that can be either 'Ok' or 'Err'.
+            Ok(num) => num,
+            Err(_) => continue,
+            // '_' is a catch-all value. It means we don't care about the error value.
+            // 'continue' skips the rest of the loop and starts a new iteration of the loop.
+        };
+        // Shadowing means the new variable 'guess' shadows the previous variable 'guess'.
         // 'trim()' removes any whitespace characters from the beginning and end of the string.
         // 'parse()' converts a string to another type. In this case, it's 'u32'. Because the declaration of 'guess' is 'u32', the string must be a valid number.
         // If the string is not a valid number, parse() will return an Err. .expect() will print the error message and exit the program.
