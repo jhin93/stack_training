@@ -23,7 +23,8 @@
       "Read(//Users/kimjinkyeong/Library/Preferences/**)",
       "Read(//Users/kimjinkyeong/Library/**)",
       "Bash(ls:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(echo $PATH)"
     ],
     "deny": [],
     "ask": []
