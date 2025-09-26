@@ -24,7 +24,11 @@
       "Read(//Users/kimjinkyeong/Library/**)",
       "Bash(ls:*)",
       "Bash(grep:*)",
-      "Bash(echo $PATH)"
+      "Bash(echo $PATH)",
+      "Read(//Users/kimjinkyeong/**)",
+      "Bash(launchctl getenv:*)",
+      "Read(//private/etc/paths.d/**)",
+      "Bash(sudo tee:*)"
     ],
     "deny": [],
     "ask": []
