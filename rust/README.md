@@ -253,7 +253,14 @@ fn main() {
 fn main() {
     let (x, _y, z) = (1, 2, 3);  // y는 필요없지만 구조분해는 필요
     let _unused = 42;             // 나중에 쓸 수도 있지만 지금은 안 씀
-    let _ = function();           // 반환값 완전 무시   
+    let _ = function();           // 반환값 완전 무시
+}
+
+// Tuple
+fn main() {
+    let tup: (i32, f64, u8) = (500, 6.4, 1);
+    let (x, y, z) = tup;
+    println!("The value of y is: {}", y);
 
     // Accessing Tuple Elements
     let x: (i32, f64, u8) = (500, 6.4, 1);
@@ -263,5 +270,9 @@ fn main() {
 
     println!("The value of five_hundred is: {}", five_hundred);
 }
-
+// Array
+fn main() {
+    let a: [i32; 5] = [1, 2, 3, 4, 5];
+    let b = [3; 5]; // let b = [3, 3, 3, 3, 3];
+}
 ```
