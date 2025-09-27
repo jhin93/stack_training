@@ -1,7 +1,7 @@
 # Go Software Engineer 로드맵 - 실무 중심 학습 가이드
 
-## 🎯 목표
-Go 백엔드/시스템 엔지니어로서 글로벌 Tech 기업 채용 가능한 실무 역량 확보
+**아래 Guidance를 기준으로 학습 진행.
+golang_training.md 의 '' 번 진행하자. Guidance 대로 가이드해줘
 
 ## 📚 핵심 학습 순서 - 기초부터 고급까지
 
