@@ -1,21 +1,10 @@
 fn main() {
-    let mut count = 0;
-    'counting_up: loop {
-        println!("count = {count}");
-        let mut remaining = 10;
+    let a = [10, 20, 30, 40, 50];
+    let mut index = 0;
 
-        loop {
-            println!("remaining = {remaining}");
-            if remaining == 9 {
-                break;
-            }
-            if count == 2 {
-                break 'counting_up;
-            }
-            remaining -= 1;
-        };
+    while index < 5 {
+        println!("the value is : {}", a[index]);
 
-        count += 1;
+        index += 1;
     };
-    println!("End count = {count}");
 }
