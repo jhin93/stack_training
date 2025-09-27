@@ -275,4 +275,14 @@ fn main() {
     let a: [i32; 5] = [1, 2, 3, 4, 5];
     let b = [3; 5]; // let b = [3, 3, 3, 3, 3];
 }
+
+// Function
+fn main() {
+    let x = plus_one(5);
+    println!("The value of x is: {x}");
+}
+
+fn plus_one(x: i32) -> i32 {
+    x + 1 // ';' makes a statement. It doesn't return a value. If you want to return a value, you need to use 'return' keyword(return x + 1;).
+}
 ```
