@@ -317,4 +317,43 @@ fn main() {
 // count = 2
 // remaining = 10
 // End count = 2
+
+
+// for loop
+fn main() {
+    let a = [10, 20, 30, 40, 50];
+    for element in a {
+        println!("the value is : {element}");
+    }
+}
+
+// .rev()
+fn main() {
+    for number in (0..6).rev() {
+        println!("{number}!");
+    };
+    println!("LIFTOFF!!!");
+}
+
+// 5!
+// 4!
+// 3!
+// 2!
+// 1!
+// 0!
+// LIFTOFF!!!
+
+fn main() {
+    let test = [1,2,3,4,5];
+    for number in (test[0]..test[test.len() - 1]).rev() {
+        println!("{number}!");
+    };
+    println!("LIFTOFF!!!");
+}
+
+// 4!
+// 3!
+// 2!
+// 1!
+// LIFTOFF!!!
 ```
