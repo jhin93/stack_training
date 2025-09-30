@@ -28,7 +28,8 @@
       "Read(//Users/kimjinkyeong/**)",
       "Bash(launchctl getenv:*)",
       "Read(//private/etc/paths.d/**)",
-      "Bash(sudo tee:*)"
+      "Bash(sudo tee:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
