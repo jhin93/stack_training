@@ -813,6 +813,9 @@ NAT 사용시:
 
 ## Java
 
+### shortcuts
+- sout : System.out.println();
+
 #### Annotation
 ```java
   // 어노테이션이 없다면 직접 작성해야 함
