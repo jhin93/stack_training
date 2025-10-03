@@ -4,25 +4,17 @@ public class Main {
     public static void main(String[] args) {
         Scanner scannerPractice = new Scanner(System.in);
 
-        System.out.println("Enter your name: ");
-        String name = scannerPractice.nextLine();
+        System.out.println("Enter your age:");
+        int age = scannerPractice.nextInt(); // nextInt()는 숫자만 읽고 엔터(\n)는 버퍼에 남겨둡니다. 
 
-        System.out.println("Enter your age: ");
-        int age = scannerPractice.nextInt();
+        // .nextLine()을 한 번 더 호출하여 버퍼에 남아있는 엔터를 제거합니다.
+        scannerPractice.nextLine();
 
-        System.out.println("What is your gpa: ");
-        double gpa = scannerPractice.nextDouble();
+        System.out.println("Enter your favorite color:");
+        String color = scannerPractice.nextLine();
 
-        System.out.println("Are you a student (true/false): ");
-        boolean isStudent = scannerPractice.nextBoolean();
-        
-        System.out.println("You are " + age + " years old.");
-        System.out.println("Your gpa is " + gpa + ".");
-        if (isStudent) {
-            System.out.println("You are a student.");
-        } else {
-            System.out.println("You are not a student.");
-        }
+        System.out.println("Your age is: " + age);
+        System.out.println("Your favorite color is: " + color);
         
         scannerPractice.close();
     }

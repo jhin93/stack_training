@@ -24,3 +24,29 @@ Queue : stores asynchronous tasks (callbacks, promises), FIFO
 2. Reference Data Types : memory address (stack) that points to the (heap)
     ex) String, Arrays, Classes, Interfaces
 
+
+- nextInt() 뒤에 nextLine()을 사용해야 하는 이유
+
+import java.util.Scanner;
+```java
+public class Main {
+    public static void main(String[] args) {
+            Scanner scannerPractice = new Scanner(System.in);
+    
+            System.out.println("Enter your age:");
+            int age = scannerPractice.nextInt(); // nextInt()는 숫자만 읽고 엔터(\n)는 버퍼에 남겨둡니다. 이 엔터를 그냥 넘어가면 남은 버퍼를 다음 nextLine()이 다음 input을 입력받기 전에 해당 엔터를 읽고 넘어감. 
+    
+            // .nextLine()을 한 번 더 호출하여 버퍼에 남아있는 엔터를 제거합니다.
+            scannerPractice.nextLine();
+    
+            System.out.println("Enter your favorite color:");
+            String color = scannerPractice.nextLine();
+    
+            System.out.println("Your age is: " + age);
+            System.out.println("Your favorite color is: " + color);
+            
+            scannerPractice.close();
+        }
+}
+
+```
