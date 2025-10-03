@@ -1,30 +1,29 @@
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
+        Scanner scannerPractice = new Scanner(System.in);
+
+        System.out.println("Enter your name: ");
+        String name = scannerPractice.nextLine();
+
+        System.out.println("Enter your age: ");
+        int age = scannerPractice.nextInt();
+
+        System.out.println("What is your gpa: ");
+        double gpa = scannerPractice.nextDouble();
+
+        System.out.println("Are you a student (true/false): ");
+        boolean isStudent = scannerPractice.nextBoolean();
         
-        int age = 21;
-        int year = 2025;
-        int quantity = 1;
-        
-        double price = 19;
-        double gpa = 3.5;
-        double temperature = -12.5;
-        
-        char grade = 'A';
-        char symbol = '!';
-        char currency = '$';
-        
-        boolean isStudent = true;
-        boolean isNotStudent = false;
-        
-        String name = "Alice";
-        String food = "Pizza";
-        System.out.println("Name: " + name + " " + food);
-        
-        if(!isNotStudent) {
-            System.out.println(name + " is a student.");
+        System.out.println("You are " + age + " years old.");
+        System.out.println("Your gpa is " + gpa + ".");
+        if (isStudent) {
+            System.out.println("You are a student.");
         } else {
-            System.out.println(name + " is not a student.");
+            System.out.println("You are not a student.");
         }
         
+        scannerPractice.close();
     }
 }
