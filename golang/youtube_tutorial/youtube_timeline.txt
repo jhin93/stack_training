@@ -1,8 +1,14 @@
 
 
 
-// url
+Slot machine. Learn Go With This ONE Project --------------
 https://www.youtube.com/watch?v=0ySoir3qBuM
+
+
+
+------------------------------------------------------------
+
+
 
 
 
