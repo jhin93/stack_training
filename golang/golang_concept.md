@@ -1,9 +1,14 @@
 
 # Golang Concept Documentation
 
+[Golang 설치 위치]
+/usr/local/go
+
 [Golang 스탠다드 라이브러리 패키지]  
 https://pkg.go.dev/std
 
+[Golang daily] 유료
+https://coddy.tech/journeys/go]
 
 **range 사용예제**
 ```go
