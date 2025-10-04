@@ -10,21 +10,83 @@ https://pkg.go.dev/std
 [Golang daily] 유료
 https://coddy.tech/journeys/go]
 
-**range 사용예제**
+**blank(_) identifier**
+Go 언어에서 blank identifier(_)는 함수가 반환하는 여러 값 중 특정 값을 의도적으로 무시하고 싶을 때 사용됩니다. 
+Go는 모든 반환값을 명시적으로 처리해야 하는 언어이므로, 사용하지 않을 값은 _로 표시하여 컴파일러에 "이 값은 사용하지 않겠다"고 알립니다.
+blank identifier는 반환값의 순서에 따라 특정 값을 선택적으로 무시할 수 있습니다. 함수가 반환하는 값의 위치에 맞춰 _를 사용하면 해당 위치의 값을 무시합니다.
+만약 함수가 세 개의 값을 반환할 때 두 번째 값을 무시하고 싶다면, result1, _, result3처럼 작성하는 것이 맞습니다.
 ```go
-func plus(a ...int) int {
-	total := 0
-	for _, item := range a {
-		total += item
-	}
-	return total
+
+// 예제 1
+package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+// processData는 세 개의 값을 반환하는 가상 함수
+func processData() (string, int, error) {
+    return "success", 42, nil // 예제 반환값
 }
 
 func main() {
-	result := plus(2, 3, 4, 5, 6, 7, 8, 9, 10)
-	fmt.Println(result)
+    // 1. 모든 반환값을 받는 경우
+    fmt.Println("=== 모든 반환값 사용 ===")
+    str, num, err := processData()
+    if err != nil {
+        fmt.Println("Error:", err)
+        return
+    }
+    fmt.Println("String:", str, "Number:", num)
+
+    // 2. 두 번째 반환값(정수)을 무시하는 경우
+    fmt.Println("\n=== 두 번째 반환값 무시 ===")
+    str, _, err = processData() // 두 번째 값(int)을 blank identifier로 무시
+    if err != nil {
+        fmt.Println("Error:", err)
+        return
+    }
+    fmt.Println("String:", str) // num은 사용되지 않음
 }
-// 54
+
+=== 모든 반환값 사용 ===
+String: success Number: 42
+
+=== 두 번째 반환값 무시 ===
+String: success
+
+
+// 예제 2
+package main
+
+import "fmt"
+
+func main() {
+    var firstName, middleName, lastName string
+    fmt.Println("Enter first, middle, and last name (separated by spaces):")
+    count, err := fmt.Scanln(&firstName, &middleName, &lastName)
+    if err != nil {
+        fmt.Println("Error reading input:", err)
+        return
+    }
+    fmt.Println("Read", count, "item(s).")
+    fmt.Println("First Name:", firstName)
+    fmt.Println("Middle Name:", middleName)
+    fmt.Println("Last Name:", lastName)
+
+    // 두 번째 값(middleName)을 무시
+    fmt.Println("\n=== Ignoring middle name ===")
+    fmt.Println("Enter first, middle, and last name again:")
+    count, err = fmt.Scanln(&firstName, _, &lastName) // middleName 무시
+    if err != nil {
+        fmt.Println("Error reading input:", err)
+        return
+    }
+    fmt.Println("Read", count, "item(s).")
+    fmt.Println("First Name:", firstName)
+    fmt.Println("Last Name:", lastName)
+}
 ```
 
 
