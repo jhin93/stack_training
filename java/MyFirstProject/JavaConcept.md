@@ -1,5 +1,5 @@
 
-- memory management 
+### memory management 
 Stack : stores primitive data types and references to objects in heap, LIFO
 Heap : stores objects and arrays, dynamic memory allocation
 Queue : stores asynchronous tasks (callbacks, promises), FIFO
@@ -18,7 +18,7 @@ Queue : stores asynchronous tasks (callbacks, promises), FIFO
 큐를 스택 메모리에 구현하면 시스템이 메모리를 자동 관리합니다(예: 고정 배열).
 큐를 힙 메모리에 구현하면 개발자가 메모리를 수동으로 관리합니다(예: 동적 배열, 연결 리스트).
 
-- variable
+### variable
 1. Primitive Data Types : simple value stored directly in memory (stack)
    ex) int, char, boolean, float, double, byte, short, long
 2. Reference Data Types : memory address (stack) that points to the (heap)
@@ -34,7 +34,9 @@ public class Main {
             Scanner scannerPractice = new Scanner(System.in);
     
             System.out.println("Enter your age:");
-            int age = scannerPractice.nextInt(); // nextInt()는 숫자만 읽고 엔터(\n)는 버퍼에 남겨둡니다. 이 엔터를 그냥 넘어가면 남은 버퍼를 다음 nextLine()이 다음 input을 입력받기 전에 해당 엔터를 읽고 넘어감. 
+            int age = scannerPractice.nextInt(); 
+            // nextInt()는 숫자만 읽고 엔터(\n)는 버퍼에 남겨둡니다. 
+            // 이 엔터를 그냥 넘어가면 남은 버퍼를 다음 nextLine()이 다음 input을 입력받기 전에 해당 엔터를 읽고 넘어감. 
     
             // .nextLine()을 한 번 더 호출하여 버퍼에 남아있는 엔터를 제거합니다.
             scannerPractice.nextLine();
