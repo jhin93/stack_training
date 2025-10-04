@@ -30,7 +30,7 @@ Queue : stores asynchronous tasks (callbacks, promises), FIFO
 import java.util.Scanner;
 ```java
 public class Main {
-    public static void main(String[] args) {
+    static void main(String[] args) {
             Scanner scannerPractice = new Scanner(System.in);
     
             System.out.println("Enter your age:");
@@ -50,5 +50,34 @@ public class Main {
             scannerPractice.close();
         }
 }
+
+```
+
+### Arithmetic operators : +, -, *, /, %
+
+```java
+import java.util.Scanner;
+import java.util.logging.XMLFormatter;
+
+public class Main {
+    static void main(String[] args) {
+
+        // Arithmetic Operators
+
+        int x = 10;
+        int y = 3;
+
+        // x += y; 13
+        // x -= y; 7
+        // x *= y; 30
+        x /= y; // 3
+        // x %= y;
+        System.out.println(x);
+
+    }
+}
+
+// x /= y;의 결과가 3.33333 이 되려면 double로 형변환 필요
+
 
 ```
