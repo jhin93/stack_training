@@ -1,11 +1,9 @@
 public class Main {
     public static void main(String[] args) {
         
-        int x = 1;
+        // Order Of operations pemdas
         
-        x ++;
-        x ++;
-        x ++; // 4
-        System.out.println(x);
+        double result = 3 + 4 * (7-5) / 2.0;
+        System.out.println(result); // 7.0
     }
 }
