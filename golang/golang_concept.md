@@ -615,6 +615,21 @@ func main() {
     // 5
 }
 ```
+
+변수에 다른 변수 주소 할당 후 메모리 주소 출력
+```golang
+package main
+
+import "fmt"
+
+func main() {
+    a := 2
+    b := &a
+    fmt.Println(b)
+    // 0x1400012e004
+}
+```
+
 포인터(*)에 다른 값을 할당해서 원본 데이터값 변경
 ```golang
 package main
