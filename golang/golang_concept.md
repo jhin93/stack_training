@@ -154,6 +154,81 @@ Slice : array의 무한대 버전. ex []string, []boolean
 append 메소드 : .append(slice, elem1, elem2)
 ex) slice = append(slice, "elem1")
 
+  // 배열: [] 안에 크기 숫자
+  [3]string{"A", "B", "C"}    // 크기 3인 배열
+  [5]int{1, 2, 3, 4, 5}       // 크기 5인 배열
+
+  // 슬라이스: [] 안이 비어있음
+  []string{"A", "B", "C"}     // 슬라이스
+  []int{1, 2, 3, 4, 5}        // 슬라이스
+
+Slice의 대표적인 형태 : []string{}. string을 담는 slice라는 뜻. []가 슬라이스를 의미 {} 안에 초기값을 넣어주면 초기값이 있는 슬라이스가 됨
+
+  symbolArr := []string{}  // 빈 슬라이스 생성 (길이 0)
+
+  다른 방법들과 비교:
+
+  // 1. 빈 슬라이스 생성
+  var arr1 []string        // nil 슬라이스
+  arr2 := []string{}       // 빈 슬라이스 (메모리 할당됨)
+
+  // 2. 값이 있는 슬라이스 생성
+  arr3 := []string{"A", "B", "C"}  // 초기값 3개
+
+  // 3. make로 생성
+  arr4 := make([]string, 0)     // 빈 슬라이스
+  arr5 := make([]string, 5)     // 길이 5, 초기값 "" 5개
+
+  {} 안에 값을 넣으면 초기값이 있는 슬라이스가 됩니다:
+  numbers := []int{1, 2, 3}      // {1, 2, 3}
+  symbols := []string{"A", "B"}  // {"A", "B"}
+
+* 배열과 slice의 차이점
+
+// 배열: [] 안에 크기 숫자
+  [3]string{"A", "B", "C"}    // 크기 3인 배열
+  [5]int{1, 2, 3, 4, 5}       // 크기 5인 배열
+
+  // 슬라이스: [] 안이 비어있음
+  []string{"A", "B", "C"}     // 슬라이스
+  []int{1, 2, 3, 4, 5}        // 슬라이스
+
+  [숫자] = 배열, [] = 슬라이스
+
+Map
+
+Map vs Slice
+
+  // Slice: 순서가 있는 리스트 (인덱스로 접근)
+  slice := []string{"A", "B", "C"}
+  slice[0]  // "A"
+
+  // Map: 키-값 쌍 (키로 접근)
+  m := map[int]bool{}
+  m[5] = true
+  m[10] = false
+
+  Map 문법
+
+  map[키타입]값타입{}
+
+  map[int]bool{}           // 키: int, 값: bool
+  map[string]int{}         // 키: string, 값: int
+  map[string]string{}      // 키: string, 값: string
+
+  사용 예시
+
+  ages := map[string]int{
+      "Alice": 25,
+      "Bob": 30,
+  }
+
+  ages["Alice"]  // 25
+  ages["Bob"]    // 30
+
+  map[int]bool{}은 "int를 키로, bool을 값으로 가지는 빈 맵"이라는 뜻입니다.
+
+
 
 **struct, method 사용예제**
 ```go
