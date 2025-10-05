@@ -1,9 +1,30 @@
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
         
-        // Order Of operations pemdas
+        Scanner scanner = new Scanner(System.in);
         
-        double result = 3 + 4 * (7-5) / 2.0;
-        System.out.println(result); // 7.0
+        String item;
+        double price;
+        int quantity;
+        char currency = '$';
+        double total;
+
+        System.out.println("What item would you like to buy?: ");
+        item = scanner.nextLine();
+
+        System.out.println("What is the price for each?: ");
+        price = scanner.nextDouble();
+
+        System.out.println("How many would you like to buy?: ");
+        quantity = scanner.nextInt();
+
+        total = price * quantity;
+
+        System.out.println("\n You have bought " + quantity + " " + item + "/s");
+        System.out.println("Your total is " + currency + total);
+        
+        scanner.close();
     }
 }
