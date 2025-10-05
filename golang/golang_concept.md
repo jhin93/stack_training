@@ -10,6 +10,21 @@ https://pkg.go.dev/std
 [Golang daily] 유료
 https://coddy.tech/journeys/go]
 
+⏺ GOROOT: Go 언어 자체가 설치된 위치
+  - Go 컴파일러, 표준 라이브러리, 도구들이 있는 디렉토리
+  - /usr/local/go
+  - Go를 설치하면 자동으로 설정됨
+  - 건드릴 필요 없음
+
+  GOPATH: 사용자의 Go 프로젝트 작업 공간
+  - 외부 패키지, 의존성, 빌드된 바이너리가 저장되는 위치
+  - $HOME/go (관례적으로 홈 디렉토리 아래 go 폴더)
+  - 내부 구조:
+    - src/ - 소스 코드
+    - pkg/ - 컴파일된 패키지
+    - bin/ - 실행 파일
+
+
 **blank(_) identifier**
 Go 언어에서 blank identifier(_)는 함수가 반환하는 여러 값 중 특정 값을 의도적으로 무시하고 싶을 때 사용됩니다. 
 Go는 모든 반환값을 명시적으로 처리해야 하는 언어이므로, 사용하지 않을 값은 _로 표시하여 컴파일러에 "이 값은 사용하지 않겠다"고 알립니다.

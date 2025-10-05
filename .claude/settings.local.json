@@ -29,7 +29,10 @@
       "Bash(launchctl getenv:*)",
       "Read(//private/etc/paths.d/**)",
       "Bash(sudo tee:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(go env:*)",
+      "Read(//private/etc/**)",
+      "Bash(source:*)"
     ],
     "deny": [],
     "ask": []
