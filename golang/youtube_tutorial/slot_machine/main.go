@@ -62,13 +62,45 @@ func getSpin(reel []string, rows int, cols int) [][]string {
 				_, exists := selected[randomIndex]
 				if !exists {
 					selected[randomIndex] = true
-					result[row][col] = reel[randomIndex]
+					result[row] = append(result[row], reel[randomIndex])
 					break
 				}
 			}
 		}
 	}
 	return result
+}
+
+func printSpin(spin [][]string) {
+	for _, row := range spin {
+		for j, symbol := range row {
+			fmt.Printf(symbol)
+			if j != len(row)-1 {
+				fmt.Print(" | ")
+			}
+		}
+		fmt.Println()
+	}
+}
+
+func checkWin(spin [][]string, multipliers map[string]uint) []uint {
+	lines := []uint{}
+
+	for _, row := range spin {
+		win := true
+		checkSymbol := row[0]
+		for _, symbol := range row[1:] {
+			if checkSymbol != symbol {
+				win = false
+			}
+		}
+		if win {
+			lines = append(lines, multipliers[checkSymbol])
+		} else {
+			lines = append(lines, 0)
+		}
+	}
+	return lines
 }
 
 func main() {
@@ -78,14 +110,14 @@ func main() {
 		"C": 12,
 		"D": 20,
 	}
-	//mutipliers := map[string]uint{
-	//	"A": 20,
-	//	"B": 10,
-	//	"C": 5,
-	//	"D": 2,
-	//}
+	multipliers := map[string]uint{
+		"A": 20,
+		"B": 10,
+		"C": 5,
+		"D": 2,
+	}
+
 	symbolArr := generateSymbolArray(symbols)
-	fmt.Println(symbolArr)
 
 	balance := uint(200) // cast to uint. Because balance is int, but getBet requires uint
 	getName()
@@ -96,6 +128,16 @@ func main() {
 			break
 		}
 		balance -= bet
+		spin := getSpin(symbolArr, 3, 3)
+		printSpin(spin)
+		winningLines := checkWin(spin, multipliers)
+		for i, multi := range winningLines {
+			win := multi * bet
+			balance += win
+			if multi > 0 {
+				fmt.Printf("Won $%d, (%dx) on Line #%d\n", win, multi, i+1)
+			}
+		}
 	}
 
 	fmt.Printf("You left with, $%d.\n", balance)

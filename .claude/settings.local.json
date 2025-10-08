@@ -32,7 +32,9 @@
       "WebSearch",
       "Bash(go env:*)",
       "Read(//private/etc/**)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "Bash(echo $GOPATH)",
+      "Bash(echo $GOROOT)"
     ],
     "deny": [],
     "ask": []
