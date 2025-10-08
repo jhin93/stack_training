@@ -10,6 +10,11 @@ https://pkg.go.dev/std
 [Golang daily] 유료
 https://coddy.tech/journeys/go]
 
+[package 실행 방법(go run main.go는 import된 여러 파일을 같이 실행하지 못함)]
+1. go mod init [package name]  // package 생성
+2. go run .
+
+// GOPATH VS GOROOT
 ⏺ GOROOT: Go 언어 자체가 설치된 위치
   - Go 컴파일러, 표준 라이브러리, 도구들이 있는 디렉토리
   - /usr/local/go
@@ -24,6 +29,48 @@ https://coddy.tech/journeys/go]
     - pkg/ - 컴파일된 패키지
     - bin/ - 실행 파일
 
+
+File Import 하는 법
+1. export 하고자 하는 파일 최상단에 import 하려는 파일과 동일한 package 작성
+2. export 하고자 하는 함수 명의 가장 앞글자를 대문자로 표기. ex) getBet -> GetBet
+
+```go
+  // testA.go
+  package mypackage
+
+  func HelloWorld() string {
+      return "Hello"
+  }
+
+  // testB.go
+  package mypackage  // 같은 패키지
+
+  import "fmt"  // 다른 패키지 import 가능
+
+  func Test() {
+      HelloWorld()  // import 없이 사용
+      fmt.Println("test")  // import해서 사용
+  }
+
+  // main.go
+  package mypackage  // 같은 패키지
+
+  func main() {
+      HelloWorld()  // import 없이 사용
+      Test()        // import 없이 사용
+  }
+
+  다른 패키지를 사용할 때만 import가 필요합니다:
+  // anyfile.go - 파일 이름은 상관없음
+  package whatever
+
+  import "fmt"
+  import "math"
+  import "myproject/otherpackage"
+
+  // 모든 파일이 import 가능
+
+```
 
 **blank(_) identifier**
 Go 언어에서 blank identifier(_)는 함수가 반환하는 여러 값 중 특정 값을 의도적으로 무시하고 싶을 때 사용됩니다. 
