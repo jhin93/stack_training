@@ -2,8 +2,6 @@ package main
 
 import "fmt"
 
-var a int = 42
-
 type hotdog int
 
 var b hotdog

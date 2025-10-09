@@ -34,7 +34,8 @@
       "Read(//private/etc/**)",
       "Bash(source:*)",
       "Bash(echo $GOPATH)",
-      "Bash(echo $GOROOT)"
+      "Bash(echo $GOROOT)",
+      "Read(//etc/paths.d/**)"
     ],
     "deny": [],
     "ask": []
