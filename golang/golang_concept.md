@@ -72,6 +72,25 @@ File Import 하는 법
 
 ```
 
+**type creating**
+```go
+package main
+
+import "fmt"
+
+var a int = 42
+
+type hotdog int
+
+var b hotdog
+
+func main() {
+	b = 13
+	fmt.Printf("%T\n", b) // main.hotdog
+	fmt.Printf("%d\n", b) // 43
+}
+```
+
 **blank(_) identifier**
 Go 언어에서 blank identifier(_)는 함수가 반환하는 여러 값 중 특정 값을 의도적으로 무시하고 싶을 때 사용됩니다. 
 Go는 모든 반환값을 명시적으로 처리해야 하는 언어이므로, 사용하지 않을 값은 _로 표시하여 컴파일러에 "이 값은 사용하지 않겠다"고 알립니다.
