@@ -4,4 +4,4 @@ https://www.udemy.com/course/golang-programming/
 
 10/13 36, 37 complete
 
-10/17
+10/17 38 complete
