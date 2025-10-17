@@ -2,12 +2,10 @@ package main
 
 import "fmt"
 
+var x int
+var y string
+var z bool
+
 func main() {
-	x := 40
-	y := "James Bond"
-	z := true
-	fmt.Println(x)
-	fmt.Println(y)
-	fmt.Println(z)
-	fmt.Println(x, y, z)
+	fmt.Println("x: ", x, "y: ", y, "z: ", z) // x:  0  y:  z:  false. zero values
 }
