@@ -1,0 +1,14 @@
+
+목표 : Enterprise Software Testing (EST) 과목의 그룹 과제 수행. sem2_EST는 2학기 Enterprise Software Testing 과목의 마지막 과제를 위한 디렉토리.
+
+과제 수행 방법:
+1. 먼저 claude로 과제 지침서를 포함한 doc 폴더 내부의 모든 문서를 분석하고, 요구사항을 이해.
+2. claude로 python과 selenium을 사용하여 LambdaTest의 전자상거래 웹사이트에 대한 시스템 테스트를 수행. 테스트 케이스는 팀원들과 분담하여 작성하고, 최종 보고서를 작성하여 제출.
+3. claude로 testcase_1_2_3.py에 내가 담당한 테스트 케이스 1, 2, 3을 구현한 파이썬 스크립트를 작성하여 완성.
+
+파일별 설명:
+Assessment Task 3.pdf : 과제 지침서
+Assignment 3 template.docx: 과제 작성 템플릿
+standard.png: 점수 기준 이미지
+LambdaTest_Ecommerce_TestCases.pdf : 테스트 케이스 분담. 내가 jin이고 1,2,3 번 테스트 케이스 담당
+System_Test_Report_Assignment3_UTS_Template_Filled.pdf : 작성중인 과제 template. 팀 멤버들과 같이 작성해야 할 부분.
