@@ -19,7 +19,7 @@ Student ID | Member Name | Role | Responsibilities (Function IDs)
 
 Task                    | Owner   | Start       | End         | Notes
 ------------------------|---------|-------------|-------------|------------------
-F1 User Registration    | Jin     | 2025-10-20  | 2025-10-21  | Must complete before F2/F9/F10
+F1 User Registration    | Jin     | 2025-10-23  | 2025-10-24  | Must complete before F2/F9/F10
 (T001, T002, T003)      |         |             |             | Includes: Happy path, Missing fields, Duplicate email
 
 Parallelism Notes:
@@ -112,7 +112,7 @@ Step # | Test Action                                    | Expected Result
 5      | Verify redirect URL contains                   | URL verification passes
        | "account/success"                              |
 
-TEST RESULT:  PASSED
+TEST RESULT: PASSED
 - User account created successfully
 - Redirected to: https://ecommerce-playground.lambdatest.io/index.php?route=account/success
 - Success message displayed: "Your Account Has Been Created!"
