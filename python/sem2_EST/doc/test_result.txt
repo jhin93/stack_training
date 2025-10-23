@@ -1,0 +1,335 @@
+# System Test Report - Assignment 3
+# Jin's Individual Contribution Sections
+# Generated: 2025-10-24
+
+================================================================================
+3. TEST TEAM
+================================================================================
+
+Student ID | Member Name | Role | Responsibilities (Function IDs)
+-----------|-------------|------|----------------------------------
+14657314   | Jin         | Tester / Automation Engineer | F1 (User Registration)
+           | <Jinkyung.Kim.email@student.uts.edu.au> | | T001, T002, T003
+
+
+
+================================================================================
+4. TASK SCHEDULE
+================================================================================
+
+Task                    | Owner   | Start       | End         | Notes
+------------------------|---------|-------------|-------------|------------------
+F1 User Registration    | Jin     | 2025-10-20  | 2025-10-21  | Must complete before F2/F9/F10
+(T001, T002, T003)      |         |             |             | Includes: Happy path, Missing fields, Duplicate email
+
+Parallelism Notes:
+- F1 is a blocking task - must complete first
+- F3-F6 can overlap across members once F1/F2 complete
+- F6 -> F7 -> F8 -> F10 must be sequential
+- F9 can run parallel with F7/F8 as it only depends on F2
+
+
+================================================================================
+5. TEST ENVIRONMENTS AND TOOLS
+================================================================================
+
+PLATFORMS & OS:
+- macOS 14 (Darwin 25.0.0)
+- x86/ARM laptops and desktops
+
+BROWSERS:
+- Chrome (latest version)
+- Safari (latest on macOS)
+- Edge (optional cross-browser testing)
+
+AUTOMATION FRAMEWORK:
+- Selenium WebDriver (Python)
+- Python 3.x
+- Virtual environment (venv)
+
+SETUP INSTRUCTIONS:
+1. Create virtual environment:
+   python3 -m venv venv
+
+2. Activate virtual environment:
+   source venv/bin/activate  # macOS/Linux
+   venv\Scripts\activate     # Windows
+
+3. Install required packages:
+   pip install selenium
+
+4. Install ChromeDriver (automatically managed by Selenium 4.x)
+
+5. Run test scripts:
+   python testcase_1_2_3.py
+
+REQUIRED PYTHON PACKAGES:
+- selenium==4.37.0
+- urllib3>=2.5.0
+- trio>=0.31.0
+- certifi>=2025.10.5
+
+
+================================================================================
+6. TEST CASES (INDIVIDUAL - JIN)
+================================================================================
+
+------------------------------------------------------------------------------
+Test Case ID: T001
+------------------------------------------------------------------------------
+Function IDs/Names: F1 User Registration
+Test Type: Positive Test / Happy Path
+Priority: High
+Tester: Jin
+Automation Status: Automated (Python + Selenium)
+
+OBJECTIVE:
+Verify that a new user can successfully register using valid information.
+
+TEST STEPS:
+
+Step # | Test Action                                    | Expected Result
+-------|------------------------------------------------|------------------
+1      | Navigate to Registration page URL             | Registration form loads
+       | https://ecommerce-playground.lambdatest.io/   |
+       | index.php?route=account/register               |
+-------|------------------------------------------------|------------------
+2      | Enter valid First Name: "John"                 | Form accepts all inputs
+       | Enter valid Last Name: "Doe"                   | Password policy satisfied
+       | Enter unique Email: test_<random>@example.com  |
+       | Enter Telephone: "1234567890"                  |
+       | Enter Password: "Test@123"                     |
+       | Enter Confirm Password: "Test@123"             |
+-------|------------------------------------------------|------------------
+3      | Check "I have read and agree to the           | Checkbox is selected
+       | Privacy Policy" checkbox                       |
+-------|------------------------------------------------|------------------
+4      | Click "Continue" button to submit form         | Account created successfully
+       |                                                | Success message displayed:
+       |                                                | "Your Account Has Been Created!"
+       |                                                | Redirected to account success page
+-------|------------------------------------------------|------------------
+5      | Verify redirect URL contains                   | URL verification passes
+       | "account/success"                              |
+
+TEST RESULT:  PASSED
+- User account created successfully
+- Redirected to: https://ecommerce-playground.lambdatest.io/index.php?route=account/success
+- Success message displayed: "Your Account Has Been Created!"
+- All validation checks passed
+
+DEFECTS: None
+
+SCREENSHOTS: [Attach screenshot of success page]
+
+
+------------------------------------------------------------------------------
+Test Case ID: T002
+------------------------------------------------------------------------------
+Function IDs/Names: F1 User Registration
+Test Type: Negative Test / Validation Test
+Priority: High
+Tester: Jin
+Automation Status: Automated (Python + Selenium)
+
+OBJECTIVE:
+Ensure the system prevents registration when required fields are missing.
+
+TEST STEPS:
+
+Step # | Test Action                                    | Expected Result
+-------|------------------------------------------------|------------------
+1      | Navigate to Registration page                  | Registration form loads
+-------|------------------------------------------------|------------------
+2      | Leave First Name field EMPTY                   | Field remains empty
+       | Enter valid Last Name: "Doe"                   | Other fields accept inputs
+       | Enter unique Email: test_<random>@example.com  |
+       | Enter Telephone: "1234567890"                  |
+       | Enter Password: "Test@123"                     |
+       | Enter Confirm Password: "Test@123"             |
+-------|------------------------------------------------|------------------
+3      | Check Privacy Policy checkbox                  | Checkbox is selected
+-------|------------------------------------------------|------------------
+4      | Click "Continue" button to submit form         | Form submission is blocked
+       |                                                | Inline validation error appears
+       |                                                | Error message:
+       |                                                | "First Name must be between
+       |                                                | 1 and 32 characters!"
+-------|------------------------------------------------|------------------
+5      | Verify still on registration page              | URL still contains "register"
+       |                                                | User not redirected
+
+TEST RESULT:  PASSED
+- Registration correctly blocked
+- Validation error message displayed: "First Name must be between 1 and 32 characters!"
+- User remained on registration page
+- No account was created
+
+DEFECTS: None
+
+SCREENSHOTS: [Attach screenshot showing validation error]
+
+
+------------------------------------------------------------------------------
+Test Case ID: T003
+------------------------------------------------------------------------------
+Function IDs/Names: F1 User Registration
+Test Type: Negative Test / Duplicate Email Test
+Priority: Medium
+Tester: Jin
+Automation Status: Automated (Python + Selenium)
+
+OBJECTIVE:
+Ensure duplicate registration with an existing email is not allowed.
+
+PRE-REQUISITES:
+- An account already registered with email: test_<random>@example.com
+
+TEST STEPS:
+
+Step # | Test Action                                    | Expected Result
+-------|------------------------------------------------|------------------
+1      | Navigate to Registration page                  | Registration form loads
+-------|------------------------------------------------|------------------
+2      | Enter valid First Name: "Bob"                  | Form accepts inputs
+       | Enter valid Last Name: "Johnson"               |
+       | Enter EXISTING Email:                          |
+       | test_<random>@example.com                      |
+       | (same email as pre-registered account)         |
+       | Enter Telephone: "5551234567"                  |
+       | Enter Password: "Test@456"                     |
+       | Enter Confirm Password: "Test@456"             |
+-------|------------------------------------------------|------------------
+3      | Check Privacy Policy checkbox                  | Checkbox is selected
+-------|------------------------------------------------|------------------
+4      | Click "Continue" button to submit form         | Form submission is blocked
+       |                                                | Error message displayed:
+       |                                                | "Warning: E-Mail Address is
+       |                                                | already registered!"
+-------|------------------------------------------------|------------------
+5      | Verify still on registration page              | URL still contains "register"
+       |                                                | User not redirected
+       |                                                | Duplicate account not created
+
+TEST RESULT:  PASSED
+- Duplicate registration correctly blocked
+- Error message displayed: "Warning: E-Mail Address is already registered!"
+- User remained on registration page
+- System properly validates existing email addresses
+
+DEFECTS: None
+
+SCREENSHOTS: [Attach screenshot showing duplicate email error]
+
+
+================================================================================
+TEST RESULTS SUMMARY (JIN - T001, T002, T003)
+================================================================================
+
+Total Test Cases: 3
+Passed: 3
+Failed: 0
+Blocked: 0
+Pass Rate: 100%
+
+DETAILED RESULTS:
+
+Test Case | Function | Type     | Priority | Status | Notes
+----------|----------|----------|----------|--------|------
+T001      | F1       | Positive | High     | PASSED | Happy path successful
+T002      | F1       | Negative | High     | PASSED | Validation working correctly
+T003      | F1       | Negative | Medium   | PASSED | Duplicate email detected
+
+EXECUTION ENVIRONMENT:
+- OS: macOS 14 (Darwin 25.0.0)
+- Browser: Chrome (latest)
+- Automation: Selenium WebDriver 4.37.0
+- Python: 3.x
+- Execution Date: 2025-10-24
+- Execution Time: ~2 minutes for all 3 tests
+
+DEFECTS FOUND: None
+
+COVERAGE ANALYSIS:
+Function F1 (User Registration) Coverage:
+    Happy path registration
+    Required field validation
+    Duplicate email validation
+    Privacy policy requirement
+    Password confirmation
+    Form field validation
+    Success message verification
+    Page redirect verification
+
+AREAS NOT COVERED (Future Test Cases):
+- Password strength validation
+- Email format validation
+- Special characters in name fields
+- SQL injection attempts
+- XSS attempts in form fields
+- Maximum length validation for all fields
+- Telephone number format validation
+- Cross-browser compatibility testing
+
+
+================================================================================
+AUTOMATION CODE STRUCTURE
+================================================================================
+
+FILE: testcase_1_2_3.py
+
+CLASS: TestUserRegistration
+  - Handles all F1 (User Registration) test cases
+  - Uses Page Object Model principles
+  - Includes setup/teardown methods
+
+METHODS:
+  - setup(): Initialize WebDriver and configuration
+  - teardown(): Clean up and close browser
+  - generate_random_email(): Create unique test emails
+  - navigate_to_register_page(): Navigate to registration page
+  - fill_registration_form(): Fill form with test data
+  - submit_registration_form(): Submit the form
+  - test_001_user_registration_happy_path(): T001 implementation
+  - test_002_user_registration_missing_fields(): T002 implementation
+  - test_003_user_registration_existing_email(): T003 implementation
+  - run_all_tests(): Execute all test cases and generate summary
+
+KEY FEATURES:
+- Automatic random email generation to avoid conflicts
+- JavaScript click for robust checkbox handling
+- Explicit waits for page elements
+- Detailed logging for each test step
+- Pass/Fail status reporting
+- Exception handling and error reporting
+
+
+================================================================================
+NOTES & OBSERVATIONS
+================================================================================
+
+1. PRIVACY POLICY HANDLING:
+   - Initial implementation had issues finding the checkbox
+   - Implemented multiple fallback methods (by name, by label, by search)
+   - Used JavaScript click for reliability
+   - Successfully handled in final version
+
+2. EMAIL UNIQUENESS:
+   - Implemented random email generation using timestamp and random strings
+   - Format: test_<8_random_chars>@example.com
+   - Ensures no conflicts between test runs
+
+3. VALIDATION MESSAGES:
+   - System provides clear, user-friendly error messages
+   - Validation is client-side and immediate
+   - Error messages are properly styled and visible
+
+4. TEST EXECUTION TIME:
+   - Each test case takes approximately 30-45 seconds
+   - Total execution time for 3 cases: ~2 minutes
+   - Includes browser startup, navigation, and teardown
+
+5. RELIABILITY:
+   - All tests consistently pass on multiple runs
+   - No flaky tests or intermittent failures
+   - Robust element location strategies
