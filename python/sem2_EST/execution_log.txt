@@ -1,0 +1,174 @@
+
+********************************************************************************
+* LambdaTest E-commerce System Testing
+* Test Cases 1, 2, 3 - User Registration
+* Author: Jin
+********************************************************************************
+
+################################################################################
+# RUNNING ALL TEST CASES FOR USER REGISTRATION
+################################################################################
+
+================================================================================
+TEST CASE 001: User Registration (Happy Path)
+================================================================================
+
+--- Setting up WebDriver ---
+WebDriver initialized successfully
+
+Test Data:
+  first_name: John
+  last_name: Doe
+  email: test_bukjp41d@example.com
+  telephone: 1234567890
+  password: ********
+  confirm_password: ********
+
+Step 1: Navigate to Register page
+Navigating to: https://ecommerce-playground.lambdatest.io/index.php?route=account/register
+
+Step 2: Fill in registration form
+Entered First Name: John
+Entered Last Name: Doe
+Entered Email: test_bukjp41d@example.com
+Entered Telephone: 1234567890
+Entered Password: ********
+Entered Confirm Password: ********
+Privacy Policy accepted (method 1: by name)
+
+Step 3: Submit the registration form
+Registration form submitted
+
+Verifying results...
+Current URL: https://ecommerce-playground.lambdatest.io/index.php?route=account/success
+Success message found: Your Account Has Been Created!
+
+TEST PASSED: User successfully registered and redirected to My Account page
+
+--- Tearing down WebDriver ---
+WebDriver closed successfully
+
+================================================================================
+TEST CASE 002: User Registration (Missing Required Fields)
+================================================================================
+
+--- Setting up WebDriver ---
+WebDriver initialized successfully
+
+Test Data (First Name intentionally left empty):
+  first_name: [EMPTY]
+  last_name: Doe
+  email: test_5tpqb1x7@example.com
+  telephone: 1234567890
+  password: ********
+  confirm_password: ********
+
+Step 1: Navigate to Register page
+Navigating to: https://ecommerce-playground.lambdatest.io/index.php?route=account/register
+
+Step 2: Fill in registration form (leaving First Name empty)
+Entered Last Name: Doe
+Entered Email: test_5tpqb1x7@example.com
+Entered Telephone: 1234567890
+Entered Password: ********
+Entered Confirm Password: ********
+Privacy Policy accepted (method 1: by name)
+
+Step 3: Submit the registration form
+Registration form submitted
+
+Verifying results...
+
+Validation errors found (1 error(s)):
+  Error 1: First Name must be between 1 and 32 characters!
+
+Current URL: https://ecommerce-playground.lambdatest.io/index.php?route=account/register
+
+ TEST PASSED: Registration blocked due to missing required field
+
+--- Tearing down WebDriver ---
+WebDriver closed successfully
+
+================================================================================
+TEST CASE 003: User Registration with Existing Email
+================================================================================
+
+--- Pre-requisite: Registering initial user ---
+
+--- Setting up WebDriver ---
+WebDriver initialized successfully
+
+First Registration Data:
+  first_name: Jane
+  last_name: Smith
+  email: test_o77nbecj@example.com
+  telephone: 9876543210
+  password: ********
+  confirm_password: ********
+Navigating to: https://ecommerce-playground.lambdatest.io/index.php?route=account/register
+Entered First Name: Jane
+Entered Last Name: Smith
+Entered Email: test_o77nbecj@example.com
+Entered Telephone: 9876543210
+Entered Password: ********
+Entered Confirm Password: ********
+Privacy Policy accepted (method 1: by name)
+Registration form submitted
+
+First user registered successfully
+
+--- Tearing down WebDriver ---
+WebDriver closed successfully
+
+--- Main Test: Attempt registration with existing email ---
+
+--- Setting up WebDriver ---
+WebDriver initialized successfully
+
+Second Registration Data (using existing email):
+  first_name: Bob
+  last_name: Johnson
+  email: test_o77nbecj@example.com
+  telephone: 5551234567
+  password: ********
+  confirm_password: ********
+
+Step 1: Navigate to Register page
+Navigating to: https://ecommerce-playground.lambdatest.io/index.php?route=account/register
+
+Step 2: Fill in registration form with existing email
+Entered First Name: Bob
+Entered Last Name: Johnson
+Entered Email: test_o77nbecj@example.com
+Entered Telephone: 5551234567
+Entered Password: ********
+Entered Confirm Password: ********
+Privacy Policy accepted (method 1: by name)
+
+Step 3: Submit the registration form
+Registration form submitted
+
+Verifying results...
+
+Error messages found (1 error(s)):
+  Error 1: Warning: E-Mail Address is already registered!
+
+Current URL: https://ecommerce-playground.lambdatest.io/index.php?route=account/register
+
+ TEST PASSED: Duplicate email error message displayed correctly
+
+--- Tearing down WebDriver ---
+WebDriver closed successfully
+
+################################################################################
+# TEST SUMMARY
+################################################################################
+T001:  PASSED
+T002:  PASSED
+T003:  PASSED
+
+Total: 3/3 tests passed
+################################################################################
+
+
+Test execution completed!

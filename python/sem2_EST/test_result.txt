@@ -9,7 +9,7 @@
 Student ID | Member Name | Role | Responsibilities (Function IDs)
 -----------|-------------|------|----------------------------------
 14657314   | Jin         | Tester / Automation Engineer | F1 (User Registration)
-           | <Jinkyung.Kim.email@student.uts.edu.au> | | T001, T002, T003
+           | <Jinkyung.Kim@student.uts.edu.au> | | T001, T002, T003
 
 
 

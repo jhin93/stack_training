@@ -238,18 +238,18 @@ class TestUserRegistration:
 
                 # Verify account page elements
                 if "account/success" in current_url or "account/account" in current_url:
-                    print("\n TEST PASSED: User successfully registered and redirected to My Account page")
+                    print("\nTEST PASSED: User successfully registered and redirected to My Account page")
                     return True
                 else:
-                    print("\n TEST FAILED: Not redirected to expected page")
+                    print("\n TEST FAILED: Not redirected to expected page")
                     return False
 
             except TimeoutException:
-                print("\n TEST FAILED: Success message not found")
+                print("\n TEST FAILED: Success message not found")
                 return False
 
         except Exception as e:
-            print(f"\n TEST FAILED with exception: {str(e)}")
+            print(f"\n TEST FAILED with exception: {str(e)}")
             return False
         finally:
             self.teardown()
@@ -332,21 +332,21 @@ class TestUserRegistration:
                     print(f"\nCurrent URL: {current_url}")
 
                     if "register" in current_url:
-                        print("\n TEST PASSED: Registration blocked due to missing required field")
+                        print("\n TEST PASSED: Registration blocked due to missing required field")
                         return True
                     else:
-                        print("\n TEST FAILED: User was redirected despite missing field")
+                        print("\n TEST FAILED: User was redirected despite missing field")
                         return False
                 else:
-                    print("\n TEST FAILED: No validation error found")
+                    print("\n TEST FAILED: No validation error found")
                     return False
 
             except Exception as e:
-                print(f"\n TEST FAILED: Error during validation check: {str(e)}")
+                print(f"\n TEST FAILED: Error during validation check: {str(e)}")
                 return False
 
         except Exception as e:
-            print(f"\n TEST FAILED with exception: {str(e)}")
+            print(f"\n TEST FAILED with exception: {str(e)}")
             return False
         finally:
             self.teardown()
@@ -476,21 +476,21 @@ class TestUserRegistration:
                 print(f"\nCurrent URL: {current_url}")
 
                 if duplicate_email_error_found:
-                    print("\n TEST PASSED: Duplicate email error message displayed correctly")
+                    print("\n TEST PASSED: Duplicate email error message displayed correctly")
                     return True
                 elif "register" in current_url:
                     print("\n� TEST PARTIALLY PASSED: Registration blocked but error message may not be specific")
                     return True
                 else:
-                    print("\n TEST FAILED: User was registered with duplicate email")
+                    print("\n TEST FAILED: User was registered with duplicate email")
                     return False
 
             except Exception as e:
-                print(f"\n TEST FAILED: Error during validation check: {str(e)}")
+                print(f"\n TEST FAILED: Error during validation check: {str(e)}")
                 return False
 
         except Exception as e:
-            print(f"\n TEST FAILED with exception: {str(e)}")
+            print(f"\n TEST FAILED with exception: {str(e)}")
             return False
         finally:
             self.teardown()
@@ -516,7 +516,7 @@ class TestUserRegistration:
         total = len(results)
 
         for test_id, result in results.items():
-            status = " PASSED" if result else " FAILED"
+            status = " PASSED" if result else " FAILED"
             print(f"{test_id}: {status}")
 
         print(f"\nTotal: {passed}/{total} tests passed")
