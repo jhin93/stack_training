@@ -17,5 +17,3 @@ function longestCommonPrefix(strs: string[]): string {
     }
     return result;
 }
-
-// test
