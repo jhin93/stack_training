@@ -29,7 +29,7 @@ select * from (table name)
 select * from menu;
  -->
 
-- Filtering example 1
+- 'order' example 1
 
 postgres=# select pizza, country, price from menu order by country, price;
    pizza    | country | price 
