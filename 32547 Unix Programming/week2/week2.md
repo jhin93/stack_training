@@ -99,14 +99,26 @@ Example:
 -rwxr-xr--
 ```
 
+1. First '-'  represents file type
+2. 'rwx'   are user permissions
+3. 'r-x' are the group permissions
+4. 'r--' others perm
+
+-rwxr-xr--  report.txt      # 일반 파일
+drwxr-xr--  project/        # 폴더
+lrwxr-xr--  shortcut -> ..  # 심볼릭 링크
+
 Numeric:
 
 | Number | Permission |
 |---|---|
-| 7 | rwx |
-| 6 | rw- |
-| 5 | r-x |
-| 4 | r-- |
+| 7 | rwx | (rwx = 4+2+1 = 7)
+| 6 | rw- | (rw = 4+2 = 6)
+| 5 | r-x | (--- = 0 + 0 + 0 = 0)
+| 4 | r |
+| 2 | w |
+| 1 | x |
+
 
 ---
 
@@ -117,10 +129,10 @@ Controls who owns files.
 Examples:
 
 ```bash
-sudo chown alice file.txt
-sudo chown alice:staff file.txt
-sudo chown -R alice project/
-chgrp dev file.txt
+sudo chown alice file.txt # change + owner = chown 소유자를 alice로 변경
+sudo chown alice:staff file.txt # 소유자 alice, 그룹 staff로 변경
+sudo chown -R alice project/ # 폴더 안의 모든 파일까지 한번에 변경
+chgrp dev file.txt # 그룹만 dev로 변경
 ```
 
 ---
@@ -140,10 +152,10 @@ Common options:
 Examples:
 
 ```bash
-chmod 644 file.txt
-chmod 755 script.sh
-chmod u+x script.sh
-chmod -R 755 project/
+chmod 644 file.txt      # 소유자 읽기/쓰기, 나머지 읽기만 change + mode = chmod
+chmod 755 script.sh     # 소유자 전부, 나머지 읽기/실행만
+chmod u+x script.sh     # 소유자(u)에게 실행(x) 권한 추가
+chmod -R 755 project/   # 폴더 안의 모든 파일까지 한번에 변경
 ```
 
 ---
@@ -349,7 +361,7 @@ Metacharacters:
 | Pattern | Meaning |
 |---|---|
 | * | any characters |
-| ? | single character |
+| ?(hook) | single character |
 | [abc] | set |
 | [a-z] | range |
 | {a,b} | alternatives |
