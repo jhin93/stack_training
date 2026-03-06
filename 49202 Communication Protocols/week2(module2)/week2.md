@@ -11,8 +11,15 @@ sudo python3 start.py
 ### 2. h1의 터미널 창 열기 (h1으로 예시)
 mininet> xterm h1
 
-### 3. 열린 xterm 창 안에서 Wireshark 실행
+### 3. 열린 xterm 창 안에서 firefox 실행
+sudo -u mininet firefox &
+
+### 4. 열린 xterm 창 안에서 firefox 실행
 wireshark &
+
+### 5. 더블 클릭
+인터페이스 목록에서 h1-eth0 선택
+더블클릭 → 캡처 시작
 
 
 ### ping 명령어 예시 
