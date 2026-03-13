@@ -889,4 +889,75 @@ done
 
 **End of Week 4**
 
+piping 연습 예제
 https://www.ryanheise.com/pipetutor/
+
+## `cut -d: -f1` 설명
+
+---- 질문 ----
+
+[user@sahara ~]$ cat /etc/passwd
+dbus:x:81:81:dbus:/:/usr/bin/nologin
+user:x:243757:243757::/home:/bin/bash
+[user@sahara ~]$ chsh zsh
+chsh: user "zsh" does not exist.
+[user@sahara ~]$ cat /etc/passwd | cut -d: -f1
+dbus
+user
+[user@sahara ~]$ cat /etc/passwd | cut -d: -f5
+dbus 
+
+
+cut -d: -f1 이 부분 설명해줘
+
+--------------
+
+`cut` 명령어는 텍스트를 **특정 구분자로 나눠서 원하는 필드만 추출**하는 명령어야.
+
+---
+
+### 옵션 분석
+
+| 옵션 | 의미 |
+|------|------|
+| `-d:` | delimiter(구분자)를 `:` 으로 설정 |
+| `-f1` | field 1번째, 즉 첫 번째 조각을 가져와 |
+
+---
+
+### 실제 동작 과정
+
+`/etc/passwd`의 한 줄을 예로 들면:
+
+```
+user:x:243757:243757::/home:/bin/bash
+```
+
+`-d:`로 `:`를 기준으로 나누면:
+
+| f1 | f2 | f3 | f4 | f5 | f6 | f7 |
+|----|----|----|----|----|----|----|
+| user | x | 243757 | 243757 | (빈칸) | /home | /bin/bash |
+
+여기서 `-f1`은 **첫 번째 조각**, 즉 `user`만 가져오는 거야.
+
+---
+
+### 네 예제 비교
+
+```bash
+cut -d: -f1   →  user, dbus       (유저명)
+cut -d: -f5   →  (빈칸), dbus     (코멘트/이름 필드)
+```
+
+`-f5`에서 `user`는 5번째 필드가 비어있어서 빈칸이 출력된 거고, `dbus`는 5번째 필드가 `dbus`라서 출력된 거야.
+
+---
+
+### 응용
+
+```bash
+cut -d: -f1,3    # 1번째와 3번째 필드 동시에
+cut -d: -f1-3    # 1~3번째 필드 범위로
+cut -d, -f2      # 구분자를 쉼표(,)로 변경
+```
