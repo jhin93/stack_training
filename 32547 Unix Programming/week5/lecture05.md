@@ -95,4 +95,15 @@ sed -E 's/d$/D/g' file.txt
 # replace ending 'd' → $
 ```
 
+현 bin 디렉토리의 모든 파일
+
+[user@sahara ~]$ ls /bin | wc -l
+5734
+
+현 디렉토리의 50번째 파일
+
+[user@sahara ~]$ ls /bin | head -50 | tail -1
+addpart
+
+
 ---
