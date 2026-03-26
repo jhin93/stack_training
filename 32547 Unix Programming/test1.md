@@ -1,4 +1,11 @@
+
 Test Details
+
+Unix Programming Test – Important
+
+Conducted during your regular lab session (attendance is mandatory)
+Covers Week 1–Week 5 (including Regular Expressions & grep)
+Platform: Ed-STEM
 
 Total Marks: 20
 Questions: 10 (2 marks each)
