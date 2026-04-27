@@ -1,22 +1,23 @@
-=====================================================================
-32606 Database, Autumn semester, 2026
-Name:           Kim JinKyung
-Student Number: 14657314
-Project:        Udemy Learning Platform
-Inspired URL:   https://www.udemy.com
-=====================================================================
-DESCRIPTION
-
-This database keeps track of an online learning platform that is
-inspired by Udemy. The platform allows instructors to publish courses
-on different topics. Each course is broken into a series of lessons.
-Students sign up to the platform and can enrol in any number of
-courses, and each course can have many students enrolled in it. After
-enrolling, a student can leave a single review (a star rating with an
-optional comment) for that course. Some instructors are senior and
-mentor (or "teach") other instructors, so an instructor may have at
-most one mentor who is also an instructor on the platform.
-=====================================================================
+-- =====================================================================
+-- 32606 Database, ("5"), Autumn semester, 2026
+-- Name:           Kim JinKyung
+-- Email:          Jinkyung.Kim@student.uts.edu.au
+-- Student Number: 14657314
+-- Project:        Udemy Learning Platform
+-- Inspired URL:   https://www.udemy.com
+-- =====================================================================
+-- DESCRIPTION
+-- 
+-- This database keeps track of an online learning platform that is
+-- inspired by Udemy. The platform allows instructors to publish courses
+-- on different topics. Each course is broken into a series of lessons.
+-- Students sign up to the platform and can enrol in any number of
+-- courses, and each course can have many students enrolled in it. After
+-- enrolling, a student can leave a single review (a star rating with an
+-- optional comment) for that course. Some instructors are senior and
+-- mentor (or "teach") other instructors, so an instructor may have at
+-- most one mentor who is also an instructor on the platform.
+-- =====================================================================
 
 
 -- =====================================================================
@@ -55,7 +56,7 @@ CREATE TABLE Instructor (
         CHECK (mentor_id <> instructor_id),
     CONSTRAINT fk_instructor_mentor
         FOREIGN KEY (mentor_id) REFERENCES Instructor(instructor_id)
-        ON DELETE SET NULL
+        ON DELETE RESTRICT
 );
 
 -- ---------------------------------------------------------------------
@@ -233,7 +234,10 @@ INSERT INTO Course (course_id, title, instructor_id, price, difficulty,
     (104, 'Deep Learning with PyTorch',     4, 129.99, 'Advanced',     60, 'English'),
     (105, 'Java Spring Boot Mastery',       2,  79.99, 'Advanced',     45, 'English'),
     (106, 'HTML & CSS Crash Course',        6,   9.99, 'Beginner',     10, 'English'),
-    (107, 'SQL for Data Analysts',          1,  29.99, 'Beginner',     15, 'English');
+    (107, 'SQL for Data Analysts',          1,  29.99, 'Beginner',     15, 'English'),
+    -- Course 108 is intentionally left without any Review row so the 0:M
+    -- nature of the Course-Review relationship is demonstrated by data.
+    (108, 'Git & GitHub Crash Course',      2,  14.99, 'Beginner',      8, 'English');
 
 -- ---------- Lessons --------------------------------------------------
 INSERT INTO Lesson (lesson_id, course_id, title, duration_minutes, lesson_order) VALUES
@@ -264,7 +268,10 @@ INSERT INTO Lesson (lesson_id, course_id, title, duration_minutes, lesson_order)
     -- SQL for Data Analysts
     (1019, 107, 'SELECT and WHERE',                         25, 1),
     (1020, 107, 'JOINs Explained',                          40, 2),
-    (1021, 107, 'GROUP BY and HAVING',                      35, 3);
+    (1021, 107, 'GROUP BY and HAVING',                      35, 3),
+    -- Git & GitHub Crash Course
+    (1022, 108, 'Why Version Control?',                     15, 1),
+    (1023, 108, 'Branching and Merging',                    30, 2);
 
 -- ---------- Students -------------------------------------------------
 INSERT INTO Student (student_id, name, email, join_date, country) VALUES
@@ -275,7 +282,11 @@ INSERT INTO Student (student_id, name, email, join_date, country) VALUES
     (5005, 'David Lee',      'david.lee@example.com',      '2024-05-09', 'South Korea'),
     (5006, 'Emma Wilson',    'emma.wilson@example.com',    '2024-06-30', 'Canada'),
     (5007, 'Liam Murphy',    'liam.murphy@example.com',    '2024-07-04', 'Ireland'),
-    (5008, 'Noah Park',      'noah.park@example.com',      '2024-08-17', 'South Korea');
+    (5008, 'Noah Park',      'noah.park@example.com',      '2024-08-17', 'South Korea'),
+    -- Olivia is intentionally NOT enrolled in any course and has written
+    -- no review, demonstrating the 0:M nature of Student-Enrollment and
+    -- Student-Review relationships.
+    (5009, 'Olivia Kim',     'olivia.kim@example.com',     '2024-09-22', 'Australia');
 
 -- ---------- Enrollments ----------------------------------------------
 -- Several students per course and several courses per student so that
@@ -421,7 +432,8 @@ ORDER BY mentor.name, mentee.name;
 --  Emma Wilson   | Canada       | 2024-06-30
 --  Liam Murphy   | Ireland      | 2024-07-04
 --  Noah Park     | South Korea  | 2024-08-17
--- (8 rows)
+--  Olivia Kim    | Australia    | 2024-09-22
+-- (9 rows)
 
 -- Q2 expected output:
 --          course_title         | rating | review_date
