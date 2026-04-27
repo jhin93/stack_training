@@ -1,0 +1,51 @@
+
+
+psql -U postgres
+
+wlsrud20@
+
+
+
+\i Kim_JinKyung_UdemyLearningPlatform.tx
+
+Query 1
+
+SELECT name, country, join_date FROM Student WHERE join_date BETWEEN DATE '2024-01-01' AND DATE '2024-12-31' ORDER BY join_date;
+
+Query 2
+
+SELECT title, rating, review_date AS course_title FROM Course NATURAL JOIN Review ORDER BY title, review_date;
+
+Query 3
+
+SELECT c.title AS course_title, r.rating, r.review_date FROM Course c, Review r WHERE c.course_id = r.course_id ORDER BY c.title, r.review_date;
+
+Query 4
+
+SELECT c.title AS course_title, COUNT(e.student_id) AS num_enrolled FROM Course c JOIN Enrollment e ON c.course_id = e.course_id GROUP BY c.course_id, c.title HAVING COUNT(e.student_id) > 2 ORDER BY num_enrolled DESC, course_title;
+
+Query 5
+
+SELECT s.name, s.country FROM Student s WHERE s.student_id IN (SELECT e.student_id FROM Enrollment e WHERE e.course_id IN (SELECT course_id FROM Course WHERE price = (SELECT MAX(price) FROM Course))) ORDER BY s.name;
+
+Query 6
+
+SELECT mentee.name AS instructor_name, mentor.name AS mentor_name FROM Instructor mentee, Instructor mentor WHERE mentee.mentor_id = mentor.instructor_id ORDER BY mentor.name, mentee.name;
+
+Query delete_restrict
+
+DELETE FROM Instructor WHERE instructor_id = 1;
+
+Query cascade
+
+SELECT * FROM Lesson WHERE course_id = 106;
+
+DELETE FROM Course WHERE course_id = 106;
+
+SELECT * FROM Lesson WHERE course_id = 106;
+
+Query course_overview
+
+SELECT * FROM course_overview;
+
+
