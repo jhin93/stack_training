@@ -1,0 +1,473 @@
+=====================================================================
+32606 Database, Autumn semester, 2026
+Name:           Kim JinKyung
+Student Number: 14657314
+Project:        Udemy Learning Platform
+Inspired URL:   https://www.udemy.com
+=====================================================================
+DESCRIPTION
+
+This database keeps track of an online learning platform that is
+inspired by Udemy. The platform allows instructors to publish courses
+on different topics. Each course is broken into a series of lessons.
+Students sign up to the platform and can enrol in any number of
+courses, and each course can have many students enrolled in it. After
+enrolling, a student can leave a single review (a star rating with an
+optional comment) for that course. Some instructors are senior and
+mentor (or "teach") other instructors, so an instructor may have at
+most one mentor who is also an instructor on the platform.
+=====================================================================
+
+
+-- =====================================================================
+-- (1) DROP STATEMENTS  (so the script can be re-run safely)
+-- =====================================================================
+DROP VIEW  IF EXISTS course_overview      CASCADE;
+DROP TABLE IF EXISTS Review               CASCADE;
+DROP TABLE IF EXISTS Enrollment           CASCADE;
+DROP TABLE IF EXISTS Lesson               CASCADE;
+DROP TABLE IF EXISTS Course               CASCADE;
+DROP TABLE IF EXISTS Student              CASCADE;
+DROP TABLE IF EXISTS Instructor           CASCADE;
+
+
+-- =====================================================================
+-- (2) CREATE STATEMENTS
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- Instructor: a person who teaches courses.  An instructor may have a
+-- mentor who is also an instructor (self-referencing 1:M relationship).
+-- ---------------------------------------------------------------------
+CREATE TABLE Instructor (
+    instructor_id   INTEGER         NOT NULL,
+    name            VARCHAR(100)    NOT NULL,
+    email           VARCHAR(100)    NOT NULL,
+    bio             VARCHAR(500),
+    mentor_id       INTEGER,
+    CONSTRAINT pk_instructor
+        PRIMARY KEY (instructor_id),
+    CONSTRAINT uq_instructor_email
+        UNIQUE (email),
+    CONSTRAINT ck_instructor_email
+        CHECK (email LIKE '%_@_%.__%'),
+    CONSTRAINT ck_instructor_not_self_mentor
+        CHECK (mentor_id <> instructor_id),
+    CONSTRAINT fk_instructor_mentor
+        FOREIGN KEY (mentor_id) REFERENCES Instructor(instructor_id)
+        ON DELETE SET NULL
+);
+
+-- ---------------------------------------------------------------------
+-- Course: a single course on the platform, taught by one instructor.
+-- ---------------------------------------------------------------------
+CREATE TABLE Course (
+    course_id       INTEGER         NOT NULL,
+    title           VARCHAR(200)    NOT NULL,
+    instructor_id   INTEGER         NOT NULL,
+    price           NUMERIC(7,2)    NOT NULL,
+    difficulty      VARCHAR(20)     NOT NULL,
+    duration_hours  INTEGER         NOT NULL,
+    language        VARCHAR(30)     NOT NULL,
+    CONSTRAINT pk_course
+        PRIMARY KEY (course_id),
+    CONSTRAINT ck_course_price
+        CHECK (price >= 0 AND price <= 999.99),
+    CONSTRAINT ck_course_difficulty
+        CHECK (difficulty IN ('Beginner', 'Intermediate', 'Advanced')),
+    CONSTRAINT ck_course_duration
+        CHECK (duration_hours > 0),
+    CONSTRAINT fk_course_instructor
+        FOREIGN KEY (instructor_id) REFERENCES Instructor(instructor_id)
+        ON DELETE RESTRICT
+);
+
+-- ---------------------------------------------------------------------
+-- Lesson: a lesson belonging to a course (1:M, fully dependent).
+-- A course may have many lessons; deleting a course deletes its lessons.
+-- ---------------------------------------------------------------------
+CREATE TABLE Lesson (
+    lesson_id        INTEGER        NOT NULL,
+    course_id        INTEGER        NOT NULL,
+    title            VARCHAR(200)   NOT NULL,
+    duration_minutes INTEGER        NOT NULL,
+    lesson_order     INTEGER        NOT NULL,
+    CONSTRAINT pk_lesson
+        PRIMARY KEY (lesson_id),
+    CONSTRAINT ck_lesson_minutes
+        CHECK (duration_minutes > 0 AND duration_minutes <= 600),
+    CONSTRAINT ck_lesson_order
+        CHECK (lesson_order > 0),
+    CONSTRAINT uq_lesson_order_in_course
+        UNIQUE (course_id, lesson_order),
+    CONSTRAINT fk_lesson_course
+        FOREIGN KEY (course_id) REFERENCES Course(course_id)
+        ON DELETE CASCADE
+);
+
+-- ---------------------------------------------------------------------
+-- Student: a person who enrols in courses.
+-- ---------------------------------------------------------------------
+CREATE TABLE Student (
+    student_id   INTEGER         NOT NULL,
+    name         VARCHAR(100)    NOT NULL,
+    email        VARCHAR(100)    NOT NULL,
+    join_date    DATE            NOT NULL DEFAULT CURRENT_DATE,
+    country      VARCHAR(50)     NOT NULL,
+    CONSTRAINT pk_student
+        PRIMARY KEY (student_id),
+    CONSTRAINT uq_student_email
+        UNIQUE (email),
+    CONSTRAINT ck_student_email
+        CHECK (email LIKE '%_@_%.__%'),
+    CONSTRAINT ck_student_join_date
+        CHECK (join_date <= CURRENT_DATE)
+);
+
+-- ---------------------------------------------------------------------
+-- Enrollment: associative entity for the M:N between Student and Course.
+-- A row exists for every (student, course) pair where that student has
+-- signed up.  Both sides ON DELETE CASCADE: removing the student or the
+-- course removes the enrolment.
+-- ---------------------------------------------------------------------
+CREATE TABLE Enrollment (
+    student_id    INTEGER        NOT NULL,
+    course_id     INTEGER        NOT NULL,
+    enroll_date   DATE           NOT NULL DEFAULT CURRENT_DATE,
+    progress_pct  INTEGER        NOT NULL DEFAULT 0,
+    CONSTRAINT pk_enrollment
+        PRIMARY KEY (student_id, course_id),
+    CONSTRAINT ck_enrollment_progress
+        CHECK (progress_pct BETWEEN 0 AND 100),
+    CONSTRAINT ck_enrollment_date
+        CHECK (enroll_date <= CURRENT_DATE),
+    CONSTRAINT fk_enrollment_student
+        FOREIGN KEY (student_id) REFERENCES Student(student_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_enrollment_course
+        FOREIGN KEY (course_id) REFERENCES Course(course_id)
+        ON DELETE CASCADE
+);
+
+-- ---------------------------------------------------------------------
+-- Review: a rating + comment that a student leaves on a course.
+-- A student can leave at most one review per course.
+-- ---------------------------------------------------------------------
+CREATE TABLE Review (
+    review_id    INTEGER         NOT NULL,
+    course_id    INTEGER         NOT NULL,
+    student_id   INTEGER         NOT NULL,
+    rating       INTEGER         NOT NULL,
+    comment      VARCHAR(500),
+    review_date  DATE            NOT NULL DEFAULT CURRENT_DATE,
+    CONSTRAINT pk_review
+        PRIMARY KEY (review_id),
+    CONSTRAINT ck_review_rating
+        CHECK (rating BETWEEN 1 AND 5),
+    CONSTRAINT ck_review_date
+        CHECK (review_date <= CURRENT_DATE),
+    CONSTRAINT uq_review_one_per_student_per_course
+        UNIQUE (course_id, student_id),
+    CONSTRAINT fk_review_course
+        FOREIGN KEY (course_id) REFERENCES Course(course_id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_review_student
+        FOREIGN KEY (student_id) REFERENCES Student(student_id)
+        ON DELETE CASCADE
+);
+
+
+-- =====================================================================
+-- (3) VIEW
+-- A read-only summary of every course showing the instructor name,
+-- number of enrolments, and the average rating.  Useful for a "course
+-- catalogue" page on the website.
+-- =====================================================================
+CREATE VIEW course_overview AS
+    SELECT  c.course_id,
+            c.title              AS course_title,
+            i.name               AS instructor_name,
+            c.difficulty,
+            c.price,
+            COUNT(DISTINCT e.student_id)            AS num_enrolled,
+            ROUND(AVG(r.rating)::numeric, 2)        AS avg_rating
+    FROM    Course      c
+            JOIN Instructor   i ON c.instructor_id = i.instructor_id
+            LEFT JOIN Enrollment e ON c.course_id  = e.course_id
+            LEFT JOIN Review     r ON c.course_id  = r.course_id
+    GROUP BY c.course_id, c.title, i.name, c.difficulty, c.price;
+
+
+-- =====================================================================
+-- (4) INSERT STATEMENTS  (data after all CREATE statements)
+-- =====================================================================
+
+-- ---------- Instructors ----------------------------------------------
+-- Senior instructors are inserted first (no mentor), then juniors are
+-- inserted in a second statement so that the self-referencing foreign
+-- key always sees its parent row already committed.
+INSERT INTO Instructor (instructor_id, name, email, bio, mentor_id) VALUES
+    (1, 'Alice Anderson',  'alice.anderson@udemy.example.com',
+        'Senior data scientist with 15 years industry experience.', NULL),
+    (2, 'Bob Brown',       'bob.brown@udemy.example.com',
+        'Java architect, ex-Google, loves clean code.',             NULL);
+
+INSERT INTO Instructor (instructor_id, name, email, bio, mentor_id) VALUES
+    (3, 'Charlie Chen',    'charlie.chen@udemy.example.com',
+        'Front-end developer specialising in React.',                  1),
+    (4, 'Diana Davis',     'diana.davis@udemy.example.com',
+        'Machine-learning researcher, PhD in NLP.',                    1),
+    (5, 'Edward Evans',    'edward.evans@udemy.example.com',
+        'Full-stack engineer, mentor for junior backend devs.',        2);
+
+INSERT INTO Instructor (instructor_id, name, email, bio, mentor_id) VALUES
+    (6, 'Fiona Fletcher',  'fiona.fletcher@udemy.example.com',
+        'UX designer turned developer, passionate teacher.',           3);
+
+-- ---------- Courses --------------------------------------------------
+INSERT INTO Course (course_id, title, instructor_id, price, difficulty,
+                    duration_hours, language) VALUES
+    (101, 'Python for Beginners',           1,  19.99, 'Beginner',     20, 'English'),
+    (102, 'Data Science Bootcamp',          1,  89.99, 'Intermediate', 50, 'English'),
+    (103, 'Modern React from Scratch',      3,  49.99, 'Intermediate', 30, 'English'),
+    (104, 'Deep Learning with PyTorch',     4, 129.99, 'Advanced',     60, 'English'),
+    (105, 'Java Spring Boot Mastery',       2,  79.99, 'Advanced',     45, 'English'),
+    (106, 'HTML & CSS Crash Course',        6,   9.99, 'Beginner',     10, 'English'),
+    (107, 'SQL for Data Analysts',          1,  29.99, 'Beginner',     15, 'English');
+
+-- ---------- Lessons --------------------------------------------------
+INSERT INTO Lesson (lesson_id, course_id, title, duration_minutes, lesson_order) VALUES
+    -- Python for Beginners
+    (1001, 101, 'Welcome and Setup',                        10, 1),
+    (1002, 101, 'Variables and Data Types',                 25, 2),
+    (1003, 101, 'Control Flow',                             30, 3),
+    (1004, 101, 'Functions',                                35, 4),
+    -- Data Science Bootcamp
+    (1005, 102, 'Numpy Basics',                             40, 1),
+    (1006, 102, 'Pandas Deep Dive',                         55, 2),
+    (1007, 102, 'Visualising Data with Matplotlib',         45, 3),
+    -- Modern React from Scratch
+    (1008, 103, 'Why React?',                               20, 1),
+    (1009, 103, 'JSX and Components',                       45, 2),
+    (1010, 103, 'Hooks in Practice',                        60, 3),
+    -- Deep Learning with PyTorch
+    (1011, 104, 'Tensors',                                  35, 1),
+    (1012, 104, 'Autograd and Backprop',                    55, 2),
+    (1013, 104, 'Building a CNN',                           80, 3),
+    -- Java Spring Boot Mastery
+    (1014, 105, 'Spring Boot Project Setup',                30, 1),
+    (1015, 105, 'REST Controllers',                         50, 2),
+    (1016, 105, 'JPA and Hibernate',                        65, 3),
+    -- HTML & CSS Crash Course
+    (1017, 106, 'HTML Tags',                                25, 1),
+    (1018, 106, 'CSS Selectors',                            30, 2),
+    -- SQL for Data Analysts
+    (1019, 107, 'SELECT and WHERE',                         25, 1),
+    (1020, 107, 'JOINs Explained',                          40, 2),
+    (1021, 107, 'GROUP BY and HAVING',                      35, 3);
+
+-- ---------- Students -------------------------------------------------
+INSERT INTO Student (student_id, name, email, join_date, country) VALUES
+    (5001, 'Sarah Smith',    'sarah.smith@example.com',    '2024-01-12', 'USA'),
+    (5002, 'James Johnson',  'james.j@example.com',        '2024-02-03', 'UK'),
+    (5003, 'Yuki Tanaka',    'yuki.tanaka@example.com',    '2024-03-21', 'Japan'),
+    (5004, 'Maria Garcia',   'maria.garcia@example.com',   '2024-04-15', 'Spain'),
+    (5005, 'David Lee',      'david.lee@example.com',      '2024-05-09', 'South Korea'),
+    (5006, 'Emma Wilson',    'emma.wilson@example.com',    '2024-06-30', 'Canada'),
+    (5007, 'Liam Murphy',    'liam.murphy@example.com',    '2024-07-04', 'Ireland'),
+    (5008, 'Noah Park',      'noah.park@example.com',      '2024-08-17', 'South Korea');
+
+-- ---------- Enrollments ----------------------------------------------
+-- Several students per course and several courses per student so that
+-- the M:N relationship is fully demonstrated.
+INSERT INTO Enrollment (student_id, course_id, enroll_date, progress_pct) VALUES
+    (5001, 101, '2024-02-01', 100),
+    (5001, 102, '2024-03-10',  60),
+    (5001, 107, '2024-09-14',  20),
+    (5002, 101, '2024-02-20',  80),
+    (5002, 103, '2024-04-05',  40),
+    (5003, 104, '2024-04-12',  10),
+    (5003, 102, '2024-05-22',  55),
+    (5004, 103, '2024-05-01',  90),
+    (5004, 105, '2024-06-15',  30),
+    (5005, 101, '2024-06-02', 100),
+    (5005, 107, '2024-09-25',  70),
+    (5006, 106, '2024-07-11', 100),
+    (5006, 103, '2024-08-04',  25),
+    (5007, 105, '2024-08-09',  50),
+    (5008, 104, '2024-09-01',  15),
+    (5008, 102, '2024-10-12',  35);
+
+-- ---------- Reviews --------------------------------------------------
+INSERT INTO Review (review_id, course_id, student_id, rating, comment, review_date) VALUES
+    (9001, 101, 5001, 5, 'Excellent introduction to Python.',          '2024-03-01'),
+    (9002, 101, 5002, 4, 'Great for beginners, a bit slow at times.',  '2024-03-12'),
+    (9003, 101, 5005, 5, 'Loved the exercises!',                       '2024-07-04'),
+    (9004, 102, 5001, 4, 'Lots of content, very useful.',              '2024-06-01'),
+    (9005, 102, 5003, 3, 'Good but pacing was uneven.',                '2024-07-19'),
+    (9006, 103, 5004, 5, 'Best React course I have taken.',            '2024-06-10'),
+    (9007, 103, 5006, 4, 'Hooks section was amazing.',                 '2024-09-02'),
+    (9008, 104, 5003, 2, 'Too advanced for me, my fault though.',      '2024-05-30'),
+    (9009, 105, 5004, 4, 'Solid Spring Boot foundations.',             '2024-08-01'),
+    (9010, 106, 5006, 5, 'Quick, clear, exactly what I needed.',       '2024-08-11'),
+    (9011, 107, 5005, 5, 'SQL finally clicked. Thanks!',               '2024-10-04');
+
+
+-- =====================================================================
+-- (5) QUERIES  (with English description; expected output below as a
+-- comment, captured from running the script in PostgreSQL 17).
+-- =====================================================================
+
+-- ---------------------------------------------------------------------
+-- Q1.  Simple query of a single table.
+--      "List the names and countries of every student who joined
+--       the platform in 2024, ordered by their join date."
+-- ---------------------------------------------------------------------
+SELECT  name,
+        country,
+        join_date
+FROM    Student
+WHERE   join_date BETWEEN DATE '2024-01-01' AND DATE '2024-12-31'
+ORDER BY join_date;
+
+
+-- ---------------------------------------------------------------------
+-- Q2.  Query using NATURAL JOIN.
+--      "For every review, show the course title, the rating that was
+--       given and the date of the review."
+--      Course and Review share exactly one column name (course_id), so
+--      NATURAL JOIN is well-defined.
+-- ---------------------------------------------------------------------
+SELECT  title       AS course_title,
+        rating,
+        review_date
+FROM    Course NATURAL JOIN Review
+ORDER BY title, review_date;
+
+
+-- ---------------------------------------------------------------------
+-- Q3.  Cross-product equivalent of Q2.
+--      Same business question as Q2 but written as a Cartesian product
+--      with the join condition expressed in the WHERE clause.
+-- ---------------------------------------------------------------------
+SELECT  c.title       AS course_title,
+        r.rating,
+        r.review_date
+FROM    Course c, Review r
+WHERE   c.course_id = r.course_id
+ORDER BY c.title, r.review_date;
+
+
+-- ---------------------------------------------------------------------
+-- Q4.  GROUP BY (with HAVING).
+--      "List every course that has more than two enrolments, together
+--       with how many students are enrolled."
+-- ---------------------------------------------------------------------
+SELECT  c.title                 AS course_title,
+        COUNT(e.student_id)     AS num_enrolled
+FROM    Course c
+        JOIN Enrollment e ON c.course_id = e.course_id
+GROUP BY c.course_id, c.title
+HAVING  COUNT(e.student_id) > 2
+ORDER BY num_enrolled DESC, course_title;
+
+
+-- ---------------------------------------------------------------------
+-- Q5.  Sub-query.
+--      "Find the names of all students who have enrolled in the most
+--       expensive course on the platform."
+-- ---------------------------------------------------------------------
+SELECT  s.name,
+        s.country
+FROM    Student s
+WHERE   s.student_id IN
+        (SELECT  e.student_id
+         FROM    Enrollment e
+         WHERE   e.course_id IN
+                 (SELECT  course_id
+                  FROM    Course
+                  WHERE   price = (SELECT MAX(price) FROM Course)))
+ORDER BY s.name;
+
+
+-- ---------------------------------------------------------------------
+-- Q6.  Cross product that CANNOT be written with NATURAL JOIN
+--      (a self-join on Instructor for the mentor relationship).
+--      "For every instructor that has a mentor, show the instructor's
+--       name and his/her mentor's name."
+--      A NATURAL JOIN would join Instructor to itself on every column
+--      (id, name, email, ...) which is not what we want, so a self
+--      cross-product with an explicit join predicate is required.
+-- ---------------------------------------------------------------------
+SELECT  mentee.name     AS instructor_name,
+        mentor.name     AS mentor_name
+FROM    Instructor mentee, Instructor mentor
+WHERE   mentee.mentor_id = mentor.instructor_id
+ORDER BY mentor.name, mentee.name;
+
+
+-- =====================================================================
+-- (6) ANSWERS / EXPECTED OUTPUT FOR EACH QUERY
+-- =====================================================================
+
+-- Q1 expected output:
+--      name      |   country    | join_date
+-- ---------------+--------------+------------
+--  Sarah Smith   | USA          | 2024-01-12
+--  James Johnson | UK           | 2024-02-03
+--  Yuki Tanaka   | Japan        | 2024-03-21
+--  Maria Garcia  | Spain        | 2024-04-15
+--  David Lee     | South Korea  | 2024-05-09
+--  Emma Wilson   | Canada       | 2024-06-30
+--  Liam Murphy   | Ireland      | 2024-07-04
+--  Noah Park     | South Korea  | 2024-08-17
+-- (8 rows)
+
+-- Q2 expected output:
+--          course_title         | rating | review_date
+-- ----------------------------- + ------ + ------------
+--  Data Science Bootcamp        |   4    | 2024-06-01
+--  Data Science Bootcamp        |   3    | 2024-07-19
+--  Deep Learning with PyTorch   |   2    | 2024-05-30
+--  HTML & CSS Crash Course      |   5    | 2024-08-11
+--  Java Spring Boot Mastery     |   4    | 2024-08-01
+--  Modern React from Scratch    |   5    | 2024-06-10
+--  Modern React from Scratch    |   4    | 2024-09-02
+--  Python for Beginners         |   5    | 2024-03-01
+--  Python for Beginners         |   4    | 2024-03-12
+--  Python for Beginners         |   5    | 2024-07-04
+--  SQL for Data Analysts        |   5    | 2024-10-04
+-- (11 rows)
+
+-- Q3 expected output: identical to Q2.
+
+-- Q4 expected output:
+--        course_title       | num_enrolled
+-- -------------------------- + ------------
+--  Data Science Bootcamp     |      3
+--  Modern React from Scratch |      3
+--  Python for Beginners      |      3
+-- (3 rows)
+
+-- Q5 expected output:
+-- (Most expensive course is "Deep Learning with PyTorch" at 129.99,
+--  enrolled by Yuki Tanaka and Noah Park.)
+--     name      |   country
+-- --------------+--------------
+--  Noah Park    | South Korea
+--  Yuki Tanaka  | Japan
+-- (2 rows)
+
+-- Q6 expected output:
+--   instructor_name  |   mentor_name
+-- ------------------ + ----------------
+--  Charlie Chen      | Alice Anderson
+--  Diana Davis       | Alice Anderson
+--  Edward Evans      | Bob Brown
+--  Fiona Fletcher    | Charlie Chen
+-- (4 rows)
+
+
+-- =====================================================================
+-- END OF FILE
+-- =====================================================================
