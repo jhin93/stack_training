@@ -1,0 +1,10 @@
+Mornfall,Estbridge,142
+Mornfall,Coldven,98
+Estbridge,Mornfall,139
+Dunhallow,Vireton,4
+Mornfall,Dunhallow,211
+Ashwick,Greyveil,520
+Greyveil,Fenport,61
+Mornfall,Crestlow,198
+Crestlow,Fenport,174
+Ashwick,Mornfall,834
