@@ -61,8 +61,8 @@ def do_option_d(entries, max_distance):
 def do_option_v():
     print("Name: Jinkyeong")
     print("Surname: Kim")
-    print("Student ID: 12345678")
-    print("Date of completion: 15 May 2026")
+    print("Student ID: 14657314")
+    print("Date of completion: 17 May 2026")
 
 
 def main():
