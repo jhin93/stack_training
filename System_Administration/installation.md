@@ -7,16 +7,16 @@
 ## 0단계 — 도구 설치
 
 ```bash
-[] # 1  UTM 설치 (Windows Server 에뮬레이션용)
+[x] # 1  UTM 설치 (Windows Server 에뮬레이션용)
 brew install --cask utm
 
-[] # 2  OVA 변환 도구
+[x] # 2  OVA 변환 도구
 brew install qemu
 
-[] # 3  telnet (Lab 1c 호스트 테스트용)
+[x] # 3  telnet (Lab 1c 호스트 테스트용)
 brew install telnet
 
-[] # 4  VMware Fusion 다운로드 페이지 열기 (Broadcom 계정 가입 → Fusion Pro 받아서 설치)
+[x] # 4  VMware Fusion 다운로드 페이지 열기 (Broadcom 계정 가입 → Fusion Pro 받아서 설치)
 open "https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%20Fusion"
 ```
 
@@ -25,18 +25,32 @@ open "https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%2
 ## 1단계 — CentOS (Lab 1a, 1b / 학습목표 1~5)
 
 ```bash
-[] # 5  ISO 폴더 생성
+[x] # 5  ISO 폴더 생성
 mkdir -p ~/VMs/iso && cd ~/VMs/iso
 
-[] # 6  CentOS Stream 10 ARM64 다운로드
-curl -L -O https://mirror.stream.centos.org/10-stream/BaseOS/aarch64/iso/CentOS-Stream-10-latest-aarch64-dvd1.iso
+[] # 6  CentOS Stream 10 ARM64 다운로드 (AARNet 호주 미러 — 약 10MB/s)
+#    -C -   : 중단된 다운로드 이어받기 (처음 받는 경우에도 그대로 동작)
+#    --retry: 연결 끊김 시 자동 재시도
+cd ~/VMs/iso
+curl -C - -L -O --retry 10 --retry-delay 5 --retry-all-errors \
+  https://mirror.aarnet.edu.au/pub/centos-stream/10-stream/BaseOS/aarch64/iso/CentOS-Stream-10-latest-aarch64-dvd1.iso
 
-[] # 7  다운로드 확인
-ls -lh ~/VMs/iso/
+[] # 7  다운로드 확인 + 무결성 검증 (체크섬 계산에 1~2분 소요)
+cd ~/VMs/iso
+ls -lh CentOS-Stream-10-latest-aarch64-dvd1.iso
+curl -sO https://mirror.aarnet.edu.au/pub/centos-stream/10-stream/BaseOS/aarch64/iso/CHECKSUM
+grep -qi "$(shasum -a 256 CentOS-Stream-10-latest-aarch64-dvd1.iso | cut -d' ' -f1)" CHECKSUM \
+  && echo "✅ 무결성 정상 — 설치 진행 가능" \
+  || echo "❌ 불일치 — 파일 삭제 후 6번 다시 실행"
 
 [] # 8  Fusion 실행
 open -a "VMware Fusion"
 ```
+
+> **미러 주의**
+> - `mirror.stream.centos.org` (원본): 575KB/s로 느림 — 완료까지 4시간 이상
+> - `ftp.swin.edu.au`: 파일 크기가 7.6GB로 **다른 빌드** — 이어받기 시 파일 깨짐
+> - `mirror.aarnet.edu.au`: 9,993,977,856 bytes로 원본과 일치 + 10MB/s ← **이것만 사용**
 
 [] **9. Fusion에서 VM 생성**
 
