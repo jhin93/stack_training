@@ -7,16 +7,16 @@
 ## 0단계 — 도구 설치
 
 ```bash
-# 1  UTM 설치 (Windows Server 에뮬레이션용)
+[] # 1  UTM 설치 (Windows Server 에뮬레이션용)
 brew install --cask utm
 
-# 2  OVA 변환 도구
+[] # 2  OVA 변환 도구
 brew install qemu
 
-# 3  telnet (Lab 1c 호스트 테스트용)
+[] # 3  telnet (Lab 1c 호스트 테스트용)
 brew install telnet
 
-# 4  VMware Fusion 다운로드 페이지 열기 (Broadcom 계정 가입 → Fusion Pro 받아서 설치)
+[] # 4  VMware Fusion 다운로드 페이지 열기 (Broadcom 계정 가입 → Fusion Pro 받아서 설치)
 open "https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%20Fusion"
 ```
 
@@ -25,31 +25,31 @@ open "https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%2
 ## 1단계 — CentOS (Lab 1a, 1b / 학습목표 1~5)
 
 ```bash
-# 5  ISO 폴더 생성
+[] # 5  ISO 폴더 생성
 mkdir -p ~/VMs/iso && cd ~/VMs/iso
 
-# 6  CentOS Stream 10 ARM64 다운로드
+[] # 6  CentOS Stream 10 ARM64 다운로드
 curl -L -O https://mirror.stream.centos.org/10-stream/BaseOS/aarch64/iso/CentOS-Stream-10-latest-aarch64-dvd1.iso
 
-# 7  다운로드 확인
+[] # 7  다운로드 확인
 ls -lh ~/VMs/iso/
 
-# 8  Fusion 실행
+[] # 8  Fusion 실행
 open -a "VMware Fusion"
 ```
 
-**9. Fusion에서 VM 생성**
+[] **9. Fusion에서 VM 생성**
 
 `File → New → Install from disc or image` → 위 ISO 선택
 
 CPU **4** / RAM **4096MB** / 디스크 **40GB** / Network **Bridged**
 
-**10. CentOS 설치 화면에서 (중요)**
+[] **10. CentOS 설치 화면에서 (중요)**
 
 - Software Selection → **Server with GUI** ← `graphical.target` 실습에 필수
 - Root Account → **Enable root account**, 비밀번호 **`student123!`** ← Lab 문서와 일치
 
-**11. 설치 완료 후 게스트 안에서**
+[] **11. 설치 완료 후 게스트 안에서**
 
 ```bash
 sudo dnf install -y net-tools      # Lab 1a의 ifconfig
@@ -63,7 +63,7 @@ uname -m                           # aarch64 나오면 성공
 
 ### 2-A. OVA 변환 먼저 시도 (권장)
 
-**12. SharePoint에서 OVA 다운로드** (UTS 로그인 필요)
+[] **12. SharePoint에서 OVA 다운로드** (UTS 로그인 필요)
 
 ```bash
 open "https://studentutsedu.sharepoint.com/sites/CombinedLecture3133832520/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FCombinedLecture3133832520%2FShared%20Documents%2FServers%2FWindows%20Server%202025%2Eova&parent=%2Fsites%2FCombinedLecture3133832520%2FShared%20Documents%2FServers"
@@ -83,20 +83,20 @@ qemu-img convert -p -O qcow2 *.vmdk ~/VMs/winserver2025.qcow2
 open -a UTM
 ```
 
-**17. UTM에서 VM 생성**
+[] **17. UTM에서 VM 생성**
 
 `+` → **Emulate** → **Other** → **Skip ISO boot**
 
 Architecture **x86_64** / System **Q35** / CPU **2** / RAM **4096MB**
 
-**18. VM 설정 편집**
+[] **18. VM 설정 편집**
 
 - 기본 디스크 삭제 → **Import Drive** → `~/VMs/winserver2025.qcow2`
 - 디스크 인터페이스 **SATA** ← 부팅 성공률 핵심
 - 네트워크 어댑터 **2개**, 둘 다 **Bridged** ← Lab 1c의 Ethernet0/Ethernet1
 - **Force multicore 체크 해제**
 
-**19. 부팅 → 로그인** (Administrator / `student123!`) → 검증
+[] **19. 부팅 → 로그인** (Administrator / `student123!`) → 검증
 
 ```cmd
 systeminfo | findstr /B /C:"OS Name" /C:"System Type"
@@ -111,13 +111,13 @@ systeminfo | findstr /B /C:"OS Name" /C:"System Type"
 open "https://www.microsoft.com/en-us/evalcenter/download-windows-server-2025"
 ```
 
-**21. UTM에서 VM 생성**
+[] **21. UTM에서 VM 생성**
 
 `+` → **Emulate** → **Windows** → **x86_64** → ISO 선택
 
 CPU **2** / RAM **4096MB** / 디스크 **64GB** / 네트워크 어댑터 **2개 Bridged** / **Force multicore 해제**
 
-**22. 설치 옵션**
+[] **22. 설치 옵션**
 
 - **Desktop Experience** 선택 ← Server Manager 필요
 - Administrator 비밀번호 **`student123!`**
@@ -126,14 +126,14 @@ CPU **2** / RAM **4096MB** / 디스크 **64GB** / 네트워크 어댑터 **2개 
 
 ## 3단계 — 마무리 설정
 
-**23. Windows 게스트 안에서 속도 개선** (관리자 PowerShell)
+[] **23. Windows 게스트 안에서 속도 개선** (관리자 PowerShell)
 
 ```powershell
 Set-MpPreference -DisableRealtimeMonitoring $true
 SystemPropertiesPerformance.exe
 ```
 
-**24. Windows 게스트에서 Lab 1c 준비**
+[] **24. Windows 게스트에서 Lab 1c 준비**
 
 - Server Manager → 시간대 **(UTC+10:00) Canberra, Melbourne, Sydney**
 - Telnet Client + Simple TCP/IP Services 기능 추가
@@ -143,7 +143,7 @@ SystemPropertiesPerformance.exe
 netsh advfirewall firewall add rule name="TCP Port 17" dir=in action=allow protocol=TCP localport=17
 ```
 
-**25. 맥(호스트)에서 연결 테스트**
+[] **25. 맥(호스트)에서 연결 테스트**
 
 ```bash
 telnet <윈도우서버_IP> 13
