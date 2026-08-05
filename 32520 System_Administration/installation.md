@@ -28,29 +28,45 @@ open "https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%2
 [x] # 5  ISO 폴더 생성
 mkdir -p ~/VMs/iso && cd ~/VMs/iso
 
-[] # 6  CentOS Stream 10 ARM64 다운로드 (AARNet 호주 미러 — 약 10MB/s)
-#    -C -   : 중단된 다운로드 이어받기 (처음 받는 경우에도 그대로 동작)
+[] # 6  CentOS Stream 10 ARM64 다운로드 (AARNet 호주 미러 — 약 10MB/s, 17분)
+#    ⚠️ latest 가 아니라 버전 고정 파일명 사용 (아래 "빌드 고정" 주의사항 참고)
+#    -C -   : 중단 시 이어받기 (처음 받는 경우에도 그대로 동작)
 #    --retry: 연결 끊김 시 자동 재시도
 cd ~/VMs/iso
 curl -C - -L -O --retry 10 --retry-delay 5 --retry-all-errors \
-  https://mirror.aarnet.edu.au/pub/centos-stream/10-stream/BaseOS/aarch64/iso/CentOS-Stream-10-latest-aarch64-dvd1.iso
+  https://mirror.aarnet.edu.au/pub/centos-stream/10-stream/BaseOS/aarch64/iso/CentOS-Stream-10-20260803.0-aarch64-dvd1.iso
 
 [] # 7  다운로드 확인 + 무결성 검증 (체크섬 계산에 1~2분 소요)
 cd ~/VMs/iso
-ls -lh CentOS-Stream-10-latest-aarch64-dvd1.iso
-curl -sO https://mirror.aarnet.edu.au/pub/centos-stream/10-stream/BaseOS/aarch64/iso/CHECKSUM
-grep -qi "$(shasum -a 256 CentOS-Stream-10-latest-aarch64-dvd1.iso | cut -d' ' -f1)" CHECKSUM \
+ISO=CentOS-Stream-10-20260803.0-aarch64-dvd1.iso
+EXPECT=8c9d50178741256676b8878fe36e953088e34936d8b3a189a007a3e04e13d7dd
+
+# 크기 확인 (10003546112 bytes 여야 함)
+stat -f%z "$ISO"
+
+# 해시 대조
+[ "$(shasum -a 256 "$ISO" | cut -d' ' -f1)" = "$EXPECT" ] \
   && echo "✅ 무결성 정상 — 설치 진행 가능" \
-  || echo "❌ 불일치 — 파일 삭제 후 6번 다시 실행"
+  || echo "❌ 불일치 — rm \"$ISO\" 후 6번 다시 실행"
 
 [] # 8  Fusion 실행
 open -a "VMware Fusion"
 ```
 
+> **⚠️ 빌드 고정이 중요한 이유 (실제로 겪은 문제)**
+> `CentOS-Stream-10-**latest**-...iso` 는 심볼릭 링크라 새 빌드가 나오면 가리키는 대상이 바뀝니다.
+> 7/29에 받기 시작 → 8/3에 새 빌드(20260803.0) 릴리스 → 8/5에 이어받기 하자
+> **앞부분은 옛 빌드, 뒷부분은 새 빌드**가 섞여 파일이 깨졌습니다 (크기도 9,993,977,856 → 10,003,546,112로 변경).
+> 며칠에 걸쳐 받을 때는 반드시 **버전 고정 파일명**을 쓰세요.
+>
 > **미러 주의**
-> - `mirror.stream.centos.org` (원본): 575KB/s로 느림 — 완료까지 4시간 이상
-> - `ftp.swin.edu.au`: 파일 크기가 7.6GB로 **다른 빌드** — 이어받기 시 파일 깨짐
-> - `mirror.aarnet.edu.au`: 9,993,977,856 bytes로 원본과 일치 + 10MB/s ← **이것만 사용**
+> - `mirror.stream.centos.org` (원본): 575KB/s — 4시간 이상
+> - `ftp.swin.edu.au`: 다른 빌드를 서빙 — 사용 금지
+> - `mirror.aarnet.edu.au`: 10MB/s ← **이것만 사용**
+>
+> **체크섬 파일 경로:** `CHECKSUM` 이 아니라 `<ISO파일명>.SHA256SUM` 입니다.
+> 새 빌드로 갱신할 때는 여기서 확인:
+> `https://mirror.aarnet.edu.au/pub/centos-stream/10-stream/BaseOS/aarch64/iso/`
 
 [] **9. Fusion에서 VM 생성**
 
