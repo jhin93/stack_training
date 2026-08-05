@@ -20,6 +20,34 @@ brew install telnet
 open "https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%20Fusion"
 ```
 
+**설치 확인** (2026-08-05 기준 전부 완료)
+
+| # | 도구 | 상태 |
+|---|---|---|
+| 1 | UTM | ✅ |
+| 2 | qemu 11.0.3 | ✅ |
+| 3 | telnet | ✅ |
+| 4 | VMware Fusion 13.6.4 | ✅ |
+
+---
+
+## 0-1단계 — ISO 다운로드 기다리는 동안 (병렬 진행)
+
+[] # 4-1  Fusion 첫 실행 → 라이선스·권한 처리 (지금 해두면 나중에 막히지 않음)
+```bash
+open -a "VMware Fusion"
+```
+- 라이선스 화면에서 **Personal Use License** 선택 (무료, 결제 아님)
+- **시스템 확장 승인 요구 시**: 시스템 설정 → 개인정보 보호 및 보안 → 하단 "차단됨" 항목 허용
+- **재부팅을 요구할 수 있습니다** ← ISO 다운로드 중이면 완료 후에 재부팅하세요
+
+[] # 4-2  Windows Server 2025 OVA 다운로드 시작 (2단계 12번을 미리 당겨서 실행)
+```bash
+open "https://studentutsedu.sharepoint.com/sites/CombinedLecture3133832520/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FCombinedLecture3133832520%2FShared%20Documents%2FServers%2FWindows%20Server%202025%2Eova&parent=%2Fsites%2FCombinedLecture3133832520%2FShared%20Documents%2FServers"
+```
+> ISO 다운로드가 끝난 뒤 시작하는 게 안전합니다 (동시 다운로드 시 대역폭을 나눠 써서 둘 다 느려지고, 중단 위험도 커집니다).
+> CentOS OVA는 받을 필요 없습니다 — ARM64 ISO로 설치하므로 x86 OVA는 못 씁니다.
+
 ---
 
 ## 1단계 — CentOS (Lab 1a, 1b / 학습목표 1~5)
