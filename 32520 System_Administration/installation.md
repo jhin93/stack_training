@@ -79,7 +79,7 @@ EXPECT=8c9d50178741256676b8878fe36e953088e34936d8b3a189a007a3e04e13d7dd
   && echo "✅ 무결성 정상 — 설치 진행 가능" \
   || echo "❌ 미완료 또는 손상 — 6번 명령어 재실행 (이어받기)"
 
-[] # 8  Fusion 실행
+[x] # 8  Fusion 실행
 open -a "VMware Fusion"
 ```
 
