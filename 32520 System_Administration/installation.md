@@ -56,36 +56,47 @@ open "https://studentutsedu.sharepoint.com/sites/CombinedLecture3133832520/Share
 [x] # 5  ISO 폴더 생성
 mkdir -p ~/VMs/iso && cd ~/VMs/iso
 
-[] # 6  CentOS Stream 10 ARM64 다운로드 (AARNet 호주 미러 — 약 10MB/s, 17분)
-#    ⚠️ latest 가 아니라 버전 고정 파일명 사용 (아래 "빌드 고정" 주의사항 참고)
-#    -C -   : 중단 시 이어받기 (처음 받는 경우에도 그대로 동작)
-#    --retry: 연결 끊김 시 자동 재시도
+[x] # 6  CentOS Stream 10 ARM64 다운로드 — aria2 사용 (curl 금지, 아래 주의사항 참고)
+#    -c          : 이어받기 (중단돼도 같은 명령어 재실행하면 손상 구간만 복구)
+#    -x 8 -s 8   : 연결 8개 분할 — 빠르고 하나 끊겨도 나머지가 계속
+#    --max-tries=0: 무한 재시도 (curl --retry 와 달리 진행분을 날리지 않음)
+brew install aria2
 cd ~/VMs/iso
-curl -C - -L -O --retry 10 --retry-delay 5 --retry-all-errors \
+aria2c -c -x 8 -s 8 --max-tries=0 --retry-wait=5 --http-accept-gzip=false \
   https://mirror.aarnet.edu.au/pub/centos-stream/10-stream/BaseOS/aarch64/iso/CentOS-Stream-10-20260803.0-aarch64-dvd1.iso
 
-[] # 7  다운로드 확인 + 무결성 검증 (체크섬 계산에 1~2분 소요)
+[x] # 7  다운로드 완료 + 무결성 검증 (해시 계산에 1~2분 소요)
+#    ⚠️ 파일 크기로 완료 판단 금지! aria2는 시작 시 10GB를 미리 할당하므로
+#       ls -l / du 둘 다 처음부터 전체 크기를 보여줍니다.
+#       진짜 완료 신호는 ".aria2 제어 파일이 사라지는 것" 입니다.
 cd ~/VMs/iso
 ISO=CentOS-Stream-10-20260803.0-aarch64-dvd1.iso
 EXPECT=8c9d50178741256676b8878fe36e953088e34936d8b3a189a007a3e04e13d7dd
 
-# 크기 확인 (10003546112 bytes 여야 함)
-stat -f%z "$ISO"
-
-# 해시 대조
-[ "$(shasum -a 256 "$ISO" | cut -d' ' -f1)" = "$EXPECT" ] \
+[ ! -f "$ISO.aria2" ] \
+  && [ "$(stat -f%z "$ISO")" = "10003546112" ] \
+  && [ "$(shasum -a 256 "$ISO" | cut -d' ' -f1)" = "$EXPECT" ] \
   && echo "✅ 무결성 정상 — 설치 진행 가능" \
-  || echo "❌ 불일치 — rm \"$ISO\" 후 6번 다시 실행"
+  || echo "❌ 미완료 또는 손상 — 6번 명령어 재실행 (이어받기)"
 
 [] # 8  Fusion 실행
 open -a "VMware Fusion"
 ```
+
+> **✅ 검증 완료 (2026-08-05)**
+> 크기 10,003,546,112 bytes / SHA256 `8c9d5017...d7dd` 일치 확인
 
 > **⚠️ 빌드 고정이 중요한 이유 (실제로 겪은 문제)**
 > `CentOS-Stream-10-**latest**-...iso` 는 심볼릭 링크라 새 빌드가 나오면 가리키는 대상이 바뀝니다.
 > 7/29에 받기 시작 → 8/3에 새 빌드(20260803.0) 릴리스 → 8/5에 이어받기 하자
 > **앞부분은 옛 빌드, 뒷부분은 새 빌드**가 섞여 파일이 깨졌습니다 (크기도 9,993,977,856 → 10,003,546,112로 변경).
 > 며칠에 걸쳐 받을 때는 반드시 **버전 고정 파일명**을 쓰세요.
+>
+> **⚠️ curl `--retry` 를 쓰지 마세요 (실제로 겪은 문제)**
+> `curl -C - --retry` 조합은 재시도할 때 출력 파일을 다시 열면서 **받아둔 진행분을 통째로 버립니다.**
+> 4.5GB까지 받은 상태에서 HTTP/2 스트림이 끊기자(`curl: (92) ... CANCEL (err 8)`)
+> 재시도가 0부터 다시 시작해 4.5GB가 날아갔습니다.
+> aria2는 `.aria2` 제어 파일에 구간별 상태를 기록해서 이런 일이 없습니다.
 >
 > **미러 주의**
 > - `mirror.stream.centos.org` (원본): 575KB/s — 4시간 이상
