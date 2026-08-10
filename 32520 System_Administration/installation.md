@@ -177,7 +177,7 @@ rm ~/VMs/iso/CentOS-Stream-10-20260803.0-aarch64-dvd1.iso   # 9.3GB 확보
 
 ### 2-A. OVA 변환 먼저 시도 (권장)
 
-[] **12. SharePoint에서 OVA 다운로드** (UTS 로그인 필요)
+[x] **12. SharePoint에서 OVA 다운로드** (UTS 로그인 필요)
 
 ```bash
 open "https://studentutsedu.sharepoint.com/sites/CombinedLecture3133832520/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FCombinedLecture3133832520%2FShared%20Documents%2FServers%2FWindows%20Server%202025%2Eova&parent=%2Fsites%2FCombinedLecture3133832520%2FShared%20Documents%2FServers"
@@ -197,26 +197,44 @@ qemu-img convert -p -O qcow2 *.vmdk ~/VMs/winserver2025.qcow2
 open -a UTM
 ```
 
-[] **17. UTM에서 VM 생성**
+[x] **17. UTM에서 VM 생성**
 
-`+` → **Emulate** → **Other** → **Skip ISO boot**
+`+` → **Emulate** → **Other**
+- Boot Device: **None** ← 최신 UTM에서 `Skip ISO boot` 가 이걸로 바뀜
+- **UEFI Boot: 체크 유지** ← 필수. 수업 OVA는 GPT/UEFI 설치본
+- Hardware: Machine **Intel ICH9 based PC (2009, x86_64)** (= Q35) / Memory **4096** MiB / CPU Cores **2**
+- Storage: **1GB** (임시, 18번에서 삭제)
 
-Architecture **x86_64** / System **Q35** / CPU **2** / RAM **4096MB**
+> **UEFI 여부 확인법** (다른 OVA를 쓸 때):
+> ```bash
+> qemu-img dd -f qcow2 -O raw if=~/VMs/winserver2025.qcow2 of=head.img bs=512 count=64
+> xxd -s 512 -l 16 head.img   # "EFI PART" 보이면 GPT → UEFI Boot 켜기
+> xxd -s 450 -l 1  head.img   # 0xEE 면 보호용 MBR → GPT 확정
+> rm head.img
+> ```
 
-[] **18. VM 설정 편집**
+[x] **18. VM 설정 편집** (VM 우클릭 → Edit → 사이드바 맨 아래 **Drives**)
 
-- 기본 디스크 삭제 → **Import Drive** → `~/VMs/winserver2025.qcow2`
-- 디스크 인터페이스 **SATA** ← 부팅 성공률 핵심
+- 1GB 임시 디스크 선택 → **Delete**
+- **+ New... → Import Drive** → `~/VMs/winserver2025.qcow2`
+- 디스크 인터페이스 **IDE 유지** ← ⚠️ UTM에 SATA 항목은 없음. **Q35에서는 IDE가 곧 AHCI(SATA)**
+  (실패 시 대안 순서: IDE → NVMe → SCSI. **VirtIO는 금지** — Windows에 기본 드라이버 없어 무조건 BSOD)
 - 네트워크 어댑터 **2개**, 둘 다 **Bridged** ← Lab 1c의 Ethernet0/Ethernet1
-- **Force multicore 체크 해제**
+- System → **Force Multicore 꺼짐** 확인
 
-[] **19. 부팅 → 로그인** (Administrator / `student123!`) → 검증
+[x] **19. 부팅 → 로그인** (Administrator / `student123!`) → 검증
+
+> 잠금화면에서 키보드가 안 먹히면 **VM 화면 안을 먼저 클릭**해 입력 포커스를 넘긴 뒤
+> `Ctrl` + `Option(⌥)` + `Fn` + `Delete` (맥의 Delete는 Backspace라 `Fn` 필요).
+> 그래도 안 되면 툴바의 **커서 아이콘**으로 입력 캡처 후 재시도 (해제는 `Ctrl`+`Option`).
 
 ```cmd
 systeminfo | findstr /B /C:"OS Name" /C:"System Type"
+ipconfig /all
 ```
 
-성공하면 **2-B 건너뛰고 23번으로**.
+> **✅ 2026-08-11 부팅 성공.** Server Manager 정상 실행 확인.
+> ISO 재설치(2-B) 불필요 — **20~22번 건너뛰고 23번으로**.
 
 ### 2-B. 변환 실패 시에만 — ISO 설치
 
