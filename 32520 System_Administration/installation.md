@@ -2,6 +2,11 @@
 
 주요 변경점 두 가지: **CentOS는 UTM 대신 Fusion**으로 (Lab 1a가 VMware 실습이라서), **Windows는 ISO 설치 전에 OVA 변환 먼저** (몇 시간 절약 + Lab 조건 일치).
 
+Centos 일반계정
+Full Name: Jinkyung Kim
+Username: student14657314
+password: student123!
+
 ---
 
 ## 0단계 — 도구 설치
