@@ -112,24 +112,64 @@ open -a "VMware Fusion"
 > 새 빌드로 갱신할 때는 여기서 확인:
 > `https://mirror.aarnet.edu.au/pub/centos-stream/10-stream/BaseOS/aarch64/iso/`
 
-[] **9. Fusion에서 VM 생성**
+[x] **9. Fusion에서 VM 생성**
 
 `File → New → Install from disc or image` → 위 ISO 선택
+→ Choose Operating System에서 **Linux → Red Hat Enterprise Linux 9 64-bit Arm**
+→ **Customize Settings** 클릭 시 저장 대화상자가 먼저 뜸 (정상). 이름 `CentOS10-NetServers` 로 저장하면 설정 창이 열림
 
 CPU **4** / RAM **4096MB** / 디스크 **40GB** / Network **Bridged**
 
-[] **10. CentOS 설치 화면에서 (중요)**
+[x] **10. CentOS 설치 화면에서 (중요) — Installation Summary 4곳**
 
-- Software Selection → **Server with GUI** ← `graphical.target` 실습에 필수
-- Root Account → **Enable root account**, 비밀번호 **`student123!`** ← Lab 문서와 일치
+- **Software Selection** → **Server with GUI** ← 기본값이 GUI 없는 Server. `graphical.target` 실습에 필수
+- **Network & Hostname** → 우측 토글 **ON** (기본 OFF!) + 호스트명 `centos10` ← 안 켜면 설치 후 `dnf` 불가
+- **Installation Destination** → 디스크 선택 후 Done. 파티션은 **Automatic** 유지 ← Lab 2d가 `/boot` + LVM 구조를 전제
+- **Root Account** → **Enable root account**, 비밀번호 **`student123!`** (약한 비밀번호 경고 시 Done 두 번)
 
-[] **11. 설치 완료 후 게스트 안에서**
+> 설치 후 재부팅하면 GNOME 초기 설정이 **일반 사용자 생성을 요구**합니다 (건너뛸 수 없음).
+> Username은 소문자 **`student`** / 비밀번호 `student123!` 로 만드세요.
+> Lab01a의 `SuperUser` 는 계정명이 아니라 **root를 가리키는 표현**입니다 ("Log in as the root user, also known as the superuser").
+> 일반 계정이 있어야 Lab01a가 가르치는 `su` 실습이 성립합니다.
+> Online Accounts 화면은 **Skip** (Lab01a 지시사항).
+
+[x] **11. 설치 완료 후 게스트 안에서**
 
 ```bash
-sudo dnf install -y net-tools      # Lab 1a의 ifconfig
-sudo dnf upgrade --refresh -y
 uname -m                           # aarch64 나오면 성공
+ip link show                       # 인터페이스 이름 확인 (Lab02b의 ens160)
+
+su -                               # 비밀번호 student123! → 프롬프트가 # 로 변경
+dnf install -y net-tools open-vm-tools-desktop
+dnf upgrade --refresh -y
+reboot
 ```
+
+| 패키지 | 이유 |
+|---|---|
+| `net-tools` | Lab 1a의 `ifconfig` |
+| `open-vm-tools-desktop` | 맥↔VM 클립보드 공유 + 화면 자동 리사이즈 (실습 편의상 필수) |
+
+[x] **11-1. 스냅샷 (필수)**
+
+**Virtual Machine → Snapshots → Take Snapshot** → 이름 `clean-install`
+
+> 확인 방법: Snapshots 창에 `clean-install` → `Current State` 로 연결된 트리가 보이면 성공 (약 8.5GB 사용).
+> 복구할 때는 `clean-install` 썸네일 선택 → 상단 되돌리기 아이콘 클릭.
+
+[] **11-2. ISO 삭제로 디스크 확보 (2단계 시작 전 권장)**
+
+```bash
+# 순서 중요: 먼저 Virtual Machine → Settings → CD/DVD 연결 해제 후 삭제
+rm ~/VMs/iso/CentOS-Stream-10-20260803.0-aarch64-dvd1.iso   # 9.3GB 확보
+```
+
+> 2단계 변환 과정에서 OVA(7GB) + VMDK(25GB) + qcow2(25GB)가 동시에 존재하는 구간이 있어
+> 여유가 17GB까지 떨어집니다. ISO를 미리 지우면 26GB로 올라가 안전합니다.
+> 재설치가 필요하면 6번으로 다시 받으면 됩니다 (17분).
+
+> Lab 1b에서 GRUB 부트 파라미터를 편집해 single-user 모드로 진입합니다. 망가뜨려도 여기로 복구 가능.
+> Lab02d도 "Remember to take a snapshot of the virtual machines!" 라고 명시.
 
 ---
 
