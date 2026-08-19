@@ -409,3 +409,55 @@ DHCP에서 MAC은 클라이언트를 식별하는 **유일한 수단**이기 때
 - Set 3: **과소 선택** (맞는 보기를 누락)
 - 대응: 보기 하나하나를 **독립적으로 O/X 판단**할 것.
   "이 정도면 맞나?" 대신 **"슬라이드에 이 문장이 있었나?"** 로 판단.
+
+---
+
+### 오답 9 — `--permanent` 만으로는 적용되지 않는다
+
+- **문제:** `firewall-cmd --reload` must be run for the permanent rule to take effect
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음 — 두 명령은 **항상 세트**
+- **왜:** firewalld는 규칙을 두 곳에 보관
+  - **Runtime** = 지금 동작 중인 규칙 (재부팅 시 소멸)
+  - **Permanent** = 설정 파일에 저장 (재부팅해도 유지)
+  - `--permanent` → **설정 파일에만 씀**, 동작 중인 방화벽은 그대로
+  - `--reload` → 설정 파일을 다시 읽어 **runtime에 반영**
+- `--permanent` 만 하면 **재부팅 전까지 DHCP가 차단된 상태**로 남음
+
+### 오답 10 — `ipconfig /release` 는 표시가 아니라 반납
+
+- **문제:** On a Windows client, `ipconfig /release` displays the full network configuration
+- **내 답:** 맞다고 선택 (오답)
+- **정답:** 틀림 — 표시는 `/all`
+
+| 명령어 | 하는 일 | 대응 DHCP 메시지 |
+|---|---|---|
+| `ipconfig /release` | 리스 **반납** | **DHCPRELEASE** |
+| `ipconfig /renew` | 리스 **요청/갱신** | DHCPDISCOVER 또는 DHCPREQUEST |
+| `ipconfig /all` | 설정 **표시** | (없음) |
+
+- **연결 기억:** DHCPRELEASE 메시지를 실제로 발생시키는 명령이 `/release`
+
+### 오답 11 — `kea-dhcp4 -t` 는 설정 문법 검사
+
+- **문제:** `kea-dhcp4 -t kea-dhcp4.conf` checks the configuration file syntax
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음. `-t` = **test**
+- **근거:** Lab04a Task 2 — *"Check the syntax using `kea-dhcp4 -t kea-dhcp4.conf`"*
+- 서비스를 시작하기 **전에** JSON 문법이 올바른지 확인하는 용도
+
+---
+
+## ★ CentOS DHCP 서버 구축 6단계 (통암기)
+
+```
+1. dnf install kea                              설치
+2. /etc/kea/kea-dhcp4.conf 편집                 설정
+3. kea-dhcp4 -t kea-dhcp4.conf                  문법 검사
+4. firewall-cmd --add-service=dhcp --permanent
+   firewall-cmd --reload                        방화벽 (2줄 세트)
+5. systemctl start kea-dhcp4                    서비스 시작
+6. tail /var/lib/kea/kea-leases4.csv            리스 확인
+```
+
+경로 함정: 설정은 **/etc/kea/**, 리스 로그는 **/var/lib/kea/**
