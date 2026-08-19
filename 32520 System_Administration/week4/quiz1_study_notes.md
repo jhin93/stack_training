@@ -494,3 +494,144 @@ DHCP에서 MAC은 클라이언트를 식별하는 **유일한 수단**이기 때
 - **교훈:** 어떤 용어가 한 번 오답에 나왔다고 그 용어가 금지어가 되는 게 아님.
   보기가 **그 용어에 대해 무엇을 주장하는지**를 봐야 함.
 - 이것이 객관식에서 가장 흔한 함정 패턴.
+
+---
+
+### ⚠️ 반복 오답 — broadcast가 router를 넘는다 (2회 틀림)
+
+- **보기:** *"A limited broadcast to `255.255.255.255` is forwarded by routers to all other subnets"*
+- **Set 1 Q2-4, Set 6 Q20-4에서 동일하게 틀림**
+- **정답:** 틀림 — broadcast는 **로컬 세그먼트에서 멈춤**
+- **논리 충돌 체크:** 같은 문제의 *"A DHCP relay agent is needed when the DHCP server is on
+  a different subnet"* 는 맞다고 골랐음. **두 보기는 같은 사실의 앞뒤.**
+  relay agent가 필요한 **이유**가 broadcast가 router를 못 넘기 때문 → 둘을 동시에 고르면 모순
+- **★ 시험장 요령: 보기들끼리 논리적으로 충돌하는지 확인할 것**
+
+### 오답 14 — nmcli 명령어 구분
+
+- **보기:** *"`nmcli con up ens192` **deletes** the connection profile"*
+- **내 답:** 맞다고 선택 (오답)
+- **정답:** 틀림 — `up` 은 **활성화(activate)**
+
+| 명령 | 동작 |
+|---|---|
+| `nmcli con up <name>` | **활성화** |
+| `nmcli con down <name>` | 비활성화 |
+| `nmcli con reload` | 설정 파일 다시 읽기 |
+| `nmcli con delete <name>` | 삭제 |
+
+### 오답 15 — 토폴로지 인터페이스 대응
+
+- **보기:** *"On Windows Server, `Ethernet0` is connected to VMnet2 (10.0.2.0/24)"*
+- **내 답:** 맞다고 선택 (오답)
+- **정답:** 틀림 — VMnet2는 **Ethernet1**
+
+```
+VMnet2 (사설, 10.0.2.0/24)  :  CentOS ens192  /  Windows Ethernet1
+NAT   (192.168.228.0/24)   :  CentOS ens160  /  Windows Ethernet0
+```
+
+- **암기법: 각 VM의 "두 번째 어댑터"가 사설망**
+  - 첫 번째(ens**160**, Ethernet**0**) → NAT, 인터넷용
+  - 두 번째(ens**192**, Ethernet**1**) → VMnet2, 사설망
+- 함께 놓친 보기: *"The gateway for the private network is the CentOS machine"* → **맞음**
+  (Lab03a 원문 *"The gateway will be the CentOS machine"*)
+
+### 오답 16 — 직접 실행했던 명령어를 문제에서 놓침
+
+- 놓친 보기들:
+  - *"`hostnamectl set-hostname Linux` changes the system hostname"* → 맞음
+  - *"`cat /etc/resolv.conf` shows the DNS servers and the search domain"* → 맞음
+  - *"Multiple DNS servers are separated by semicolons, e.g. `dns=1.1.1.1;2.2.2.2;`"* → 맞음
+  - *"Two hosts addressed `10.0.2.1/24` and `10.0.2.15/24` are on the same subnet"* → 맞음
+- **전부 Lab test 1에서 직접 수행/확인한 내용.** 지식 부족이 아니라 **집중력 문제**
+- **대응: 보기 4개를 하나씩 독립적으로 O/X 판정할 것. O가 3개여도 3개 다 고른다.**
+
+---
+
+### 오답 17 — kea의 `interfaces` 설정은 필수 항목
+
+- **보기:** *"`"interfaces": ["ens192"]` specifies which interface the DHCP server listens on"*
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음
+- **슬라이드 17:** *"Required settings: **interface**, default router, DNS, domain-search"* — interface가 필수 1번
+```json
+"Dhcp4": {
+    "interfaces-config": { "interfaces": [ "ens192" ] },
+```
+- **왜 지정해야 하나:** CentOS에는 NIC이 2개
+  - `ens160` = NAT (192.168.228.x) 인터넷용
+  - `ens192` = VMnet2 (10.0.2.x) 사설망
+  - 지정하지 않으면 **NAT망에도 주소를 뿌리는 rogue DHCP server**가 됨
+
+### 오답 18 — Windows 역할 설치 경로
+
+- **보기:** *"The DHCP Server role is installed via Server Manager → Manage → Add Roles and Features"*
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음 — Lab04b Task 2 원문 그대로
+
+| 목적 | 경로 |
+|---|---|
+| **설치** | Server Manager → **Manage** → Add Roles and Features |
+| **관리** | Server Manager → **Tools** → DHCP |
+
+- **Manage = 설치, Tools = 관리**
+
+### ★ Lab 4a / 4b 역할 구분 (이건 맞췄음, 유지)
+
+| | DHCP Server | DHCP Client |
+|---|---|---|
+| **Lab 4a** | **CentOS** (kea) | Windows |
+| **Lab 4b** | **Windows** (DHCP role) | CentOS |
+
+---
+
+## ★ 선택 경향 2 — "1번 보기"를 반복해서 놓침
+
+Set 6~7에서 놓친 정답 4개가 **전부 1번 보기** (Q19-1, Q20-1, Q21-1, Q22-1).
+
+- 원인 추정: 1번을 읽을 때 문제 맥락이 아직 안 잡혀 판단을 미루고 그대로 넘어감
+- **대응: 4개를 다 읽은 뒤 1번으로 돌아가 한 번 더 판정할 것**
+
+---
+
+### ★★ 오답 19 — 보기 4개가 전부 정답인 문제가 나온다
+
+Set 8 Q27은 **4개 모두 정답**이었으나 2개만 선택함.
+
+- 놓친 보기 1: *"A DHCP client automatically obtains its network configuration from a DHCP server"*
+  → 슬라이드 6 원문: *"DHCP clients: **Automatically obtain network config from a DHCP server**"*
+- 놓친 보기 4: *"On Windows, setting IPv4 to 'Obtain an IP address automatically' makes it a DHCP client"*
+  → Lab04a Task 3: *"Set up the Windows Server as a DHCP (Hint: Just set the IP to **automatic**.)"*
+
+**★ 규칙: 정답 개수를 예상하지 말 것. 4개를 각각 O/X로만 판정하고, O가 4개면 4개 다 고른다.**
+
+### 오답 20 — DHCPNAK은 서버만 보낸다
+
+- **보기:** *"The client sends a **DHCPNAK** to the server it did not choose"*
+- **내 답:** 맞다고 선택 (오답)
+- **정답:** 틀림 — 선택받지 못한 서버는 **아무것도 보내지 않음**.
+  REQUEST를 broadcast로 듣고 조용히 주소를 pool에 반납할 뿐
+
+**★ 메시지 방향 전체표 (이것만 외우면 방향 문제는 전부 해결)**
+
+| 메시지 | 방향 |
+|---|---|
+| DHCP**DISCOVER** | Client → Server |
+| DHCP**OFFER** | **Server** → Client |
+| DHCP**REQUEST** | Client → Server |
+| DHCP**ACK** | **Server** → Client |
+| DHCP**NAK** | **Server** → Client |
+| DHCP**DECLINE** | Client → Server |
+| DHCP**RELEASE** | Client → Server |
+
+**암기법: 서버가 보내는 건 `OFFER`, `ACK`, `NAK` 세 개뿐. 나머지 4개는 전부 클라이언트.**
+
+### 오답 21 — Lease duration은 scope property
+
+- **보기:** *"The lease duration is a **scope property** configured on the DHCP server"*
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음 — Scope 속성 7가지 중 하나
+- 정의: *"The period of time that the DHCP server holds a leased IP address for a client
+  before removing the lease"*
+- **lease duration은 클라이언트가 정하는 게 아니라 서버의 scope에 설정하는 값**
