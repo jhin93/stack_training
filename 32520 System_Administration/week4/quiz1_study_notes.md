@@ -346,3 +346,66 @@ NAT               192.168.228.0/24
   - broadcast로 보내면 → Server2도 듣고 **제안 주소를 pool에 반납**
   - REQUEST 안에 "내가 고른 서버는 누구다"가 들어 있고, 모두가 듣게 만드는 것이 목적
 - **★ 정리: DORA 중 D, O, R = broadcast / A(ACK) = 선택된 서버의 응답**
+
+### 오답 5 — Scope의 정의를 놓침
+
+- **문제:** A scope is a range of IP addresses available for leasing
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음 — 슬라이드의 **정의 문장** 그 자체
+- **슬라이드 원문:** `scope = range of IP addresses for leasing` (두 번 반복 등장)
+- **함께 나온 오답:** "Scope name은 서버가 주소를 정하는 데 쓴다" → **틀림**.
+  Scope name = *"An alphanumeric identifier for **administrative purposes**"*
+  = 사람이 알아보기 위한 **이름표일 뿐**, 서버 동작에 관여하지 않음
+
+### 오답 6 — Reservation은 MAC address로 식별한다
+
+- **문제:** A reservation identifies the client by its MAC address
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음
+- **슬라이드 원문:** *"To configure a reservation, Server must obtain the device's **MAC address**."*
+- **왜 MAC인가:** 주소를 주기 **전에** 상대를 알아볼 수단이 MAC뿐임
+  - IP → 아직 안 줬으니 없음 / 호스트명 → 신뢰 불가, 변경 가능 / **MAC → NIC에 고정, 유일** ✅
+
+### 오답 7 — MAC 표기법: Windows는 dash, Linux는 colon
+
+- **문제:** On a Windows DHCP server, the MAC must be entered with **colons**
+- **내 답:** 맞다고 선택 (오답)
+- **정답:** 틀림 — Windows는 **dash `-`**
+- **근거:**
+  - Lab04a(Linux/kea): *"MAC address format is with **colons** between each pair of hex digits"*
+  - Lab04b(Windows): *"must be entered in the format with **dashes** ... rather than colons"*
+  - Lab04b 경고: 형식이 틀리면 *"The unique identifier you have entered may not be correct"* 오류
+
+### 오답 8 — 80:20 rule은 서버 "두 대"로 나누는 것
+
+- **문제:** It splits a scope's addresses between two DHCP servers
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음
+- **왜:** 80:20의 전제 자체가 **DHCP 서버 2대**. 한 대면 나눌 이유가 없음.
+  목적이 **이중화(fault tolerance / availability)** 이므로 당연히 2대.
+
+---
+
+## ★ 약점 보강 — MAC address 집중 정리
+
+> Set 1 Q3-1, Set 3 Q8-2를 **연속으로 놓침**. MAC 관련 보기가 반복 약점.
+
+DHCP에서 MAC이 나오는 곳은 **3군데**:
+
+| 위치 | 내용 |
+|---|---|
+| **Lease** | lease는 특정 adapter의 **MAC**에 대해 발급됨 |
+| **Reservation** | **MAC**으로 클라이언트를 식별해 고정 IP 부여 |
+| **표기법** | Linux(kea) = **colon `:`** / Windows = **dash `-`** |
+
+**보기에 "MAC address"가 보이면 일단 맞을 확률이 높다.**
+DHCP에서 MAC은 클라이언트를 식별하는 **유일한 수단**이기 때문.
+
+---
+
+## ★ 선택 경향 메모
+
+- Set 1: **과다 선택** (틀린 보기를 포함)
+- Set 3: **과소 선택** (맞는 보기를 누락)
+- 대응: 보기 하나하나를 **독립적으로 O/X 판단**할 것.
+  "이 정도면 맞나?" 대신 **"슬라이드에 이 문장이 있었나?"** 로 판단.
