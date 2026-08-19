@@ -332,3 +332,17 @@ NAT               192.168.228.0/24
 - **lease의 속성 2가지:** ① 대상 = adapter의 **MAC address** ② 기간 = 정해진 시간
 - **주의:** 같은 문장에서 "Will change over time"이 나오므로
   "영구적으로 유지된다"는 보기는 **오답**. 두 보기가 짝으로 출제되는 패턴.
+
+### 오답 4 — DHCPREQUEST는 unicast가 아니라 broadcast
+
+- **문제:** The client sends the DHCPREQUEST packet as a unicast directly to the chosen server only
+- **내 답:** 맞다고 선택 (오답)
+- **정답:** 틀림 — REQUEST도 **broadcast**
+- **슬라이드 원문:** *"DHCP client **broadcasts** a DHCPREQUEST packet"*
+- **왜 broadcast여야 하나:**
+  - DISCOVER 하나에 Server1, Server2가 각각 OFFER를 보내고 **각자 주소를 임시 예약**함
+  - REQUEST를 unicast로 Server1에만 보내면 → Server2는 소식을 몰라
+    **자기가 제안한 주소를 타임아웃까지 계속 붙잡음 (주소 낭비)**
+  - broadcast로 보내면 → Server2도 듣고 **제안 주소를 pool에 반납**
+  - REQUEST 안에 "내가 고른 서버는 누구다"가 들어 있고, 모두가 듣게 만드는 것이 목적
+- **★ 정리: DORA 중 D, O, R = broadcast / A(ACK) = 선택된 서버의 응답**
