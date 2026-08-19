@@ -303,10 +303,32 @@ NAT               192.168.228.0/24
 
 <!-- 아래에 계속 추가 -->
 
-### 오답 1
+### 오답 1 — DHCP는 TCP가 아니라 UDP
 
--
+- **문제:** DHCP communication uses TCP ports 67 and 68
+- **내 답:** 맞다고 선택 (오답)
+- **정답:** 틀림 — **UDP** 67/68
+- **왜:** DHCP 시작 시점의 client는 ① 자기 IP가 없고 ② 서버 위치도 모름.
+  TCP는 3-way handshake를 위해 양쪽 주소를 알아야 하므로 사용 불가.
+  → **connectionless인 UDP + broadcast**가 유일한 방법.
 
-### 오답 2
+### 오답 2 — Broadcast는 router를 넘지 못한다
 
--
+- **문제:** A broadcast packet is forwarded by routers to hosts on all other subnets
+- **내 답:** 맞다고 선택 (오답)
+- **정답:** 틀림 — `255.255.255.255`는 **limited broadcast**로 **로컬 세그먼트에서 멈춤**
+- **왜:** 이것이 **DHCP relay agent**가 존재하는 이유.
+  서버가 다른 subnet에 있으면 broadcast가 도달 불가 →
+  relay agent가 대신 받아 서버로 unicast 전달.
+  슬라이드: *"DHCP server can be relayed through an agent"*
+- **인과로 기억:** broadcast가 router를 못 넘음 → 그래서 relay agent 필요
+
+### 오답 3 — Lease는 MAC address 기준으로 발급된다
+
+- **문제:** A lease is issued for a specific adapter's MAC address
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음
+- **왜:** 슬라이드 원문 *"'lease' is for a specific adapter **MAC** & for **specified length of time**"*
+- **lease의 속성 2가지:** ① 대상 = adapter의 **MAC address** ② 기간 = 정해진 시간
+- **주의:** 같은 문장에서 "Will change over time"이 나오므로
+  "영구적으로 유지된다"는 보기는 **오답**. 두 보기가 짝으로 출제되는 패턴.
