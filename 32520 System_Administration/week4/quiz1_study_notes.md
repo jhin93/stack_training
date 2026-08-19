@@ -461,3 +461,36 @@ DHCP에서 MAC은 클라이언트를 식별하는 **유일한 수단**이기 때
 ```
 
 경로 함정: 설정은 **/etc/kea/**, 리스 로그는 **/var/lib/kea/**
+
+---
+
+### 오답 12 — Windows는 MAC을 "Physical Address"로 표시
+
+- **보기:** *"In `ipconfig /all` on Windows, the MAC address is displayed as **Physical Address**"*
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음
+
+| OS | 명령어 | MAC 표시 이름 |
+|---|---|---|
+| **Windows** | `ipconfig /all` | **Physical Address** |
+| **Linux** | `ifconfig ens192` | **ether** |
+
+- 실제 내 화면: `Physical Address. . . : B6-39-1F-D2-AF-B0` / `ether 00:0c:29:c5:8a:d5`
+- **"Physical"이 곧 MAC의 정의** — MAC = 물리 주소(하드웨어), IP = 논리 주소
+
+### 오답 13 ★ — 같은 용어, 다른 주장 (객관식 최대 함정)
+
+- **보기:** *"The scope name is an alphanumeric identifier used for **administrative purposes**"*
+- **내 답:** 선택 안 함 (놓침)
+- **정답:** 맞음 — 슬라이드 정의 그대로
+
+**Set 3에서 틀렸던 보기와 비교:**
+
+| 주장 | 판정 |
+|---|---|
+| *"Scope name is used by the server to **decide which addresses to lease**"* | ❌ 기능적 역할 없음 |
+| *"Scope name is an alphanumeric identifier for **administrative purposes**"* | ✅ 정의 그대로 |
+
+- **교훈:** 어떤 용어가 한 번 오답에 나왔다고 그 용어가 금지어가 되는 게 아님.
+  보기가 **그 용어에 대해 무엇을 주장하는지**를 봐야 함.
+- 이것이 객관식에서 가장 흔한 함정 패턴.
