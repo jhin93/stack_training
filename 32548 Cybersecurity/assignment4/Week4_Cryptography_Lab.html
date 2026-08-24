@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>32548 Cyber Security - Week 4 Lab: Cryptography, SSL & X.509</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 870px; margin: 30px auto; padding: 0 26px; color: #1a1a1a; line-height: 1.55; font-size: 15px; }
+  h1 { font-size: 22px; border-bottom: 2px solid #444; padding-bottom: 6px; }
+  h2 { font-size: 18px; margin-top: 34px; color: #14243a; }
+  h3 { font-size: 15px; margin-top: 20px; }
+  code, .cmd { font-family: Menlo, Consolas, monospace; font-size: 0.86em; background: #f3f3f3; padding: 1px 5px; border-radius: 3px; }
+  .cmd { display: block; padding: 8px 12px; margin: 8px 0; white-space: pre-wrap; border-left: 3px solid #999; }
+  img { max-width: 100%; border: 1px solid #bbb; margin: 10px 0 4px; display: block; }
+  .cap { font-size: 0.82em; color: #555; font-style: italic; margin-bottom: 16px; }
+  .meta td { padding: 2px 14px 2px 0; font-family: Arial, sans-serif; font-size: 0.9em; }
+  p { margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<h1>32548 Cyber Security &ndash; Week 4 Lab: Cryptography, SSL &amp; X.509 Certificates</h1>
+<table class="meta">
+  <tr><td><b>Name:</b></td><td>________________________</td></tr>
+  <tr><td><b>Student ID:</b></td><td>________________________</td></tr>
+  <tr><td><b>Tutorial:</b></td><td>Tut4 &nbsp;|&nbsp; <b>Subject:</b> 32548 &nbsp;|&nbsp; <b>Group:</b> Cmp1 (Activity 03)</td></tr>
+  <tr><td><b>Date:</b></td><td>24 August 2026</td></tr>
+</table>
+
+<h2>Intro</h2>
+<p>This week the lab is about the basic stuff that make secure communication works - so symmetric
+encryption first, then the asymmetric one (RSA), and also the whole X.509 certificate part which is
+what make HTTPS possible. There was 5 tasks in total and i done each one from the terminal by using
+OpenSSL, and for the last task i setup a small HTTPS server so i can actually see how the certificate
+trust is working in real. Below i put all the screenshots and also the exact commands that i used for
+every task.</p>
+
+<!-- ============ TASK 1 ============ -->
+<h2>Task 1 &ndash; Symmetric Encryption &amp; Decryption</h2>
+<p>Symmetric encryption basically mean you use one single shared key for both locking and unlocking the
+data. For this one i used AES-128 with the CBC mode. The main thing that i noticed is that after
+encryption the file become totally unreadable, and to get the original back you need the exact same key
+and IV, if not it just wont work.</p>
+
+<h3>Q1 &ndash; Text file (Text_file.txt)</h3>
+<p>Commands i used for the encryption and also the decryption:</p>
+<span class="cmd">openssl enc -aes-128-cbc -e -in Text_file.txt -out text_cbc.enc -K 00112233445566778899aabbccddeeff -iv 0102030405060708090a0b0c0d0e0f10
+openssl enc -aes-128-cbc -d -in text_cbc.enc -out text_dec.txt -K 00112233445566778899aabbccddeeff -iv 0102030405060708090a0b0c0d0e0f10</span>
+<img src="s1.png" alt="Task1 text encrypt">
+<div class="cap">Fig 1. The original text, then the encrypt command, and <code>cat text_cbc.enc</code> showing the
+scrambled ciphertext - now you cant read the text anymore.</div>
+
+<h3>Q2 &ndash; Image file (image.bmp)</h3>
+<p>Same cipher but this time on the image file. Because the encrypted one is a binary i opened it with
+<code>nano</code> instead (if you open a binary with <code>cat</code> the terminal just get all
+messed up):</p>
+<span class="cmd">openssl enc -aes-128-cbc -e -in image.bmp -out image_cbc.enc -K 00112233445566778899aabbccddeeff -iv 0102030405060708090a0b0c0d0e0f10
+openssl enc -aes-128-cbc -d -in image_cbc.enc -out image_dec.bmp -K 00112233445566778899aabbccddeeff -iv 0102030405060708090a0b0c0d0e0f10</span>
+<img src="s2.png" alt="Task1 image encrypt">
+<div class="cap">Fig 2. The encrypted image inside nano, all the original bitmap bytes are completely scrambled.</div>
+<img src="s3.png" alt="Task1 full flow">
+<div class="cap">Fig 3. The full round trip for both file - after decrypt, <code>head text_dec.txt</code> show the
+original text again, and <code>file image_dec.bmp</code> say "PC bitmap ... 1658 x 1611", so the decryption
+bring back the files exactly the same.</div>
+
+<p><b>Observation:</b> when you encrypt a file with some cipher/mode it give a totally different
+unreadable output, and you need the same key + IV to reverse it. Also the mode you pick is actually
+matter a lot in the real world - ECB mode leak the structure because the same plaintext block always
+turn into the same ciphertext block, but CBC (the one i used) chain the blocks together with a IV so no
+pattern is showing. This is basically the exact weakness behind the Adobe breach in 2013, they stored
+around 153 million password with 3DES in ECB mode and the researchers manage to recover the common ones
+without even breaking the key at all.</p>
+
+<!-- ============ TASK 2 ============ -->
+<h2>Task 2 &ndash; Asymmetric (RSA) Encryption</h2>
+<p>Asymmetric encryption is when there is a key pair - a public key that anyone can use for encrypt, and
+a private key which only the owner have for decrypt. So i made a file with my name inside, generate the
+key pair, and then encrypt using the public key and decrypt using the private one.</p>
+<span class="cmd">echo 'Jinkyung' > file.txt
+openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:2048
+openssl rsa -pubout -in private.pem -out public.pem
+openssl rsautl -encrypt -inkey public.pem -pubin -in file.txt -out file.enc
+openssl rsautl -decrypt -inkey private.pem -in file.enc -out dec.txt</span>
+<img src="s4.png" alt="Task2 file+private key">
+<div class="cap">Fig 4. (1) <code>file.txt</code> with my name inside, and (2) the private key (<code>private.pem</code>) that got generated.</div>
+<img src="s5.png" alt="Task2 public key">
+<div class="cap">Fig 5. (3) the public key (<code>public.pem</code>), which is derived from the private key.</div>
+<img src="s6.png" alt="Task2 encrypted">
+<div class="cap">Fig 6. (4) encrypting with the public key, then <code>cat file.enc</code> show the scrambled ciphertext.</div>
+<img src="s7.png" alt="Task2 decrypted">
+<div class="cap">Fig 7. (5) decrypting with the private key - <code>cat dec.txt</code> give back my name, so only the private key can undo what the public key locked.</div>
+
+<p><b>Observation:</b> whatever you encrypt with the public key can only be open with the matching
+private key. Which mean the private key is like the most sensitive thing in the whole scheme - the
+Heartbleed bug (2014) is a good example here, it was a memory leak flaw in OpenSSL that let the attacker
+read the server private key straight out of the memory, so they could decrypt the traffic or pretend to
+be the server, doesnt matter how strong RSA itself is.</p>
+
+<!-- ============ TASK 3 ============ -->
+<h2>Task 3 &ndash; Becoming a Certificate Authority (CA)</h2>
+<p>In this task i make myself into a root CA. First i copy the OpenSSL config file, change its working
+directory to the current folder, and create the folder/file structure that the CA database is needing.
+After that i generate a self-signed root certificate.</p>
+<span class="cmd">cp /usr/lib/ssl/openssl.cnf ./
+# edited openssl.cnf so that: dir = ./
+mkdir crl certs newcerts
+touch index.txt
+echo '01' > serial
+openssl req -new -x509 -keyout ca.key -out ca.crt -config openssl.cnf</span>
+<img src="s8.png" alt="Task3 setup">
+<div class="cap">Fig 8. The <code>dir</code> in the config is now <code>./</code>, and <code>ls</code> show the CA
+structure: <code>certs, crl, index.txt, newcerts, openssl.cnf, serial</code>.</div>
+<img src="s9.png" alt="Task3 CA cert">
+<div class="cap">Fig 9. Generating the self-signed CA cert. The details i put: AU / NSW / SYD / UTS / FEIT /
+cybersec.com.au / root@cybersec.com.au. After that <code>ls</code> show <code>ca.key</code> and <code>ca.crt</code> is created.</div>
+
+<p><b>Observation:</b> the root CA private key (<code>ca.key</code>) is very powerful - whoever have it
+can sign a "valid" certificate for basically any name. This is exactly what happen in the DigiNotar
+(2011) case, the attacker used the trusted CA own signing process to issue more than 500 fake
+certificates (one of them was even for *.google.com), and that is the reason why the real CAs are
+audited so heavily.</p>
+
+<!-- ============ TASK 4 ============ -->
+<h2>Task 4 &ndash; Issuing an X.509 Certificate for cybersec.com.au</h2>
+<p>Now i am acting as the CA and i issue a certificate to a "website". There is 3 steps for this one -
+generate the server key, make a Certificate Signing Request (CSR), and then let the CA sign it.</p>
+<span class="cmd">openssl genrsa -aes128 -out server.key 1024
+openssl req -new -key server.key -out server.csr -config openssl.cnf
+openssl ca -in server.csr -out server.crt -cert ca.crt -keyfile ca.key -config openssl.cnf</span>
+<img src="s10.png" alt="Task4 CSR">
+<div class="cap">Fig 10. Generating the server key and the CSR command with the details i entered
+(Organization = UTS, Common Name = cybersec.com.au). The challenge password and the optional company name i left them blank.</div>
+<img src="s11.png" alt="Task4 sign">
+<div class="cap">Fig 11. The CA signing the CSR - "Signature ok", the certificate details, then <b>Sign? y / commit? y</b>
+and "Data Base Updated". Now <code>ls</code> show the issued <code>server.crt</code>.</div>
+
+<p><b>Observation:</b> the <code>openssl ca</code> step is the exact legit signing operation that issue a
+trusted certificate - which is the same step the DigiNotar attackers abused from inside the compromised
+CA to issue certificates for domain they dont even own.</p>
+
+<!-- ============ TASK 5 ============ -->
+<h2>Task 5 &ndash; Using PKI for a Web Site (HTTPS)</h2>
+<p>For the last task i use the certificate to run a HTTPS server and see how the browser trust is
+actually working. I point the domain to localhost, put the key and the certificate together into one
+<code>server.pem</code>, and then launch the OpenSSL test web server.</p>
+<span class="cmd">echo "127.0.0.1 cybersec.com.au" | sudo tee -a /etc/hosts
+cp server.key server.pem
+cat server.crt >> server.pem
+openssl s_server -cert server.pem -www</span>
+<img src="s12.png" alt="Task5 server launch">
+<div class="cap">Fig 12. Launching the HTTPS server with <code>server.pem</code> - it reach the <code>ACCEPT</code> state and listen on port 4433.</div>
+
+<h3>Before trusting the CA</h3>
+<p>When i first visit <code>https://cybersec.com.au:4433</code> in Firefox it give me a warning, because
+the browser have no reason yet to trust my self-signed CA:</p>
+<img src="s13.png" alt="Task5 not secure">
+<div class="cap">Fig 13. "Your connection is not secure - the owner of cybersec.com.au has configured their
+website improperly". This is the browser correctly refuse to trust an unknown CA.</div>
+
+<h3>Importing and trusting the CA</h3>
+<p>So i imported <code>ca.crt</code> into Firefox (Preferences &rarr; Advanced &rarr; Certificates &rarr;
+View Certificates &rarr; Authorities &rarr; Import) and tick "Trust this CA to identify websites".</p>
+<img src="s14.png" alt="Task5 cert manager">
+<div class="cap">Fig 14. The Certificate Manager (Authorities) is now showing <b>UTS &rarr; cybersec.com.au</b>, so my CA is trusted.</div>
+
+<h3>After trusting the CA</h3>
+<img src="s15.png" alt="Task5 https works">
+<div class="cap">Fig 15. Reloading <code>https://cybersec.com.au:4433</code> now load with a padlock and a valid TLS
+session (TLSv1.2, ECDHE-RSA-AES128-GCM-SHA256, "Verify return code: 0 (ok)").</div>
+
+<p><b>Observation:</b> before i import my CA, Firefox block the site with the untrusted certificate
+warning; after i add <code>ca.crt</code> as a trusted authority, the exact same site load with a padlock
+and no warning at all. This show the core idea of the web trust model - a browser will trust any
+certificate that is signed by a CA it already trust. But it also show the danger: the Lenovo Superfish
+(2015) case is exactly this checkbox but abused in a big scale, a self-signed root CA with a recoverable
+private key was pre-installed on the laptops so the adware could silently intercept all the HTTPS traffic
+without any warning showing to the user.</p>
+
+<h2>Reflection</h2>
+<p>Doing all the steps by hand make it clear to me that in all the four real incidents above, the actual
+maths of AES and RSA was never really broken - the failure was always in how the crypto get used,
+configured or trusted (a wrong cipher mode, a leaked private key, a compromised CA, or a certificate
+that is trusted without any good reason). So understanding why every command, flag and warning message
+exist is the thing that actually prevent these kind of mistake in a real deployment.</p>
+
+</body>
+</html>
