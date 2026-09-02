@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>32548 Cyber Security - Week 5 Lab: Understanding TCP/IP based Attacks</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; max-width: 870px; margin: 30px auto; padding: 0 26px; color: #1a1a1a; line-height: 1.55; font-size: 15px; }
+  h1 { font-size: 22px; border-bottom: 2px solid #444; padding-bottom: 6px; }
+  h2 { font-size: 18px; margin-top: 34px; color: #14243a; }
+  h3 { font-size: 15px; margin-top: 20px; }
+  code, .cmd { font-family: Menlo, Consolas, monospace; font-size: 0.86em; background: #f3f3f3; padding: 1px 5px; border-radius: 3px; }
+  .cmd { display: block; padding: 8px 12px; margin: 8px 0; white-space: pre-wrap; border-left: 3px solid #999; }
+  img { max-width: 100%; border: 1px solid #bbb; margin: 10px 0 4px; display: block; }
+  .cap { font-size: 0.82em; color: #555; font-style: italic; margin-bottom: 16px; }
+  .meta td { padding: 2px 14px 2px 0; font-family: Arial, sans-serif; font-size: 0.9em; }
+  p { margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<h1>32548 Cyber Security &ndash; Week 5 Lab: Understanding TCP/IP based Attacks</h1>
+<table class="meta">
+  <tr><td><b>Name:</b></td><td>Jinkyung Kim</td></tr>
+  <tr><td><b>Student ID:</b></td><td>14657314</td></tr>
+  <tr><td><b>Tutorial:</b></td><td>Tut04 &nbsp;|&nbsp; <b>Subject:</b> 32548 &nbsp;|&nbsp; <b>Group:</b> Cmp1</td></tr>
+  <tr><td><b>Date:</b></td><td>2 September 2026</td></tr>
+</table>
+
+<h2>Intro</h2>
+<p>This week lab was about TCP/IP based attacks - so basically the weaknesses that exist inside the
+TCP/IP protocols themselves, and how an attacker can abuse them. There was 3 tasks: SYN flooding, ARP
+cache poisoning, and ICMP redirect. All of them use the three VMs (Server 10.0.2.6, Client 10.0.2.8,
+Attacker 10.0.2.7), the netwox/netwag tool on the attacker, and wireshark/tshark to capture the traffic.
+I put my commands and screenshots under each task below.</p>
+
+<p>One thing i should mention: i run all this on an Apple Silicon Mac under UTM, and the virtual network
+there behave like a switch, so an attacker cant just sniff another VM's traffic. This matter for Task 3
+and i explain how i worked around it there.</p>
+
+<!-- ============ TASK 1 ============ -->
+<h2>Task 1 &ndash; SYN Flooding Attack</h2>
+<p>SYN flooding is a type of DoS attack where the attacker send a lot of TCP SYN packets to a victim but
+never finish the 3-way handshake. So the victim keep a lot of half-open connections in its queue (the
+ones that got SYN, replied SYN-ACK, but never got the final ACK), and when that queue is full it cant
+accept any new connection anymore. I used netwag tool 76 (Synflood) on the attacker, targeting the
+client (10.0.2.8) on port 80, and i captured on the client with tshark (tshark is recommended here
+because the flood is so fast that normal wireshark can crash).</p>
+<span class="cmd">76 --dst-ip 10.0.2.8 --dst-port 80 --spoofip "best"</span>
+<img src="ss1.png" alt="Task1 netwag 76">
+<div class="cap">Fig 1. netwag tool 76 (Synflood) targeting the client 10.0.2.8 on port 80, with IP spoofing set to "best".</div>
+<img src="ss2.png" alt="Task1 tshark capture">
+<div class="cap">Fig 2. The client's tshark capturing the attack - a flood of TCP [SYN] packets going to 10.0.2.8:http, each from a different random spoofed source IP.</div>
+
+<p><b>Comment on the observation:</b> after i run it, the client's tshark showed a huge amount of TCP
+[SYN] packets coming to 10.0.2.8 on port 80, and every single one has a different random source IP
+(because of the spoofing). None of them ever complete the handshake. You can also see some ARP "who
+has ...?" from 10.0.2.7 mixed in, which is actually the real attacker trying to resolve those fake IPs.</p>
+
+<p><b>Severity and how it is linked to DoS:</b> this is a Denial of Service (DoS) attack and i would
+rate the severity as high. Each spoofed SYN make the victim allocate a half-open connection entry and
+reply with a SYN-ACK, but since the spoofed source never send the final ACK, the entry just sit there
+until it timeout. Once the backlog queue is full the victim can not accept any legitimate connection
+anymore, so it directly attack the Availability of the service. That is basically the whole point of a
+SYN flood - it is one of the classic ways to cause a DoS.</p>
+
+<!-- ============ TASK 2 ============ -->
+<h2>Task 2 &ndash; ARP Cache Poisoning</h2>
+<p>ARP cache poisoning abuse the fact that ARP is stateless - a host will basically believe any ARP
+reply it receive and update its cache, even if it never asked. So an attacker can send forged ARP
+replies to make the victim store a wrong IP-to-MAC mapping. I used netwag tool 80 (Periodically send
+ARP replies) to poison the server, making it believe that the client (10.0.2.8) is at a fake MAC
+address aa:bb:cc:dd:ee:ff.</p>
+<span class="cmd">80 --eth aa:bb:cc:dd:ee:ff --ip 10.0.2.8 --device "Eth0" --eth-dst 66:60:18:56:2b:9c --ip-dst 10.0.2.6 --sleep 1000</span>
+<img src="ss3.png" alt="Task2 arp before">
+<div class="cap">Fig 3. The server's ARP table BEFORE the attack - 10.0.2.8 is correctly mapped to the real client MAC 36:7e:09:64:6d:f3.</div>
+<img src="ss4.png" alt="Task2 netwag 80">
+<div class="cap">Fig 4. netwag tool 80 running, sending the forged ARP replies (10.0.2.8 is at aa:bb:cc:dd:ee:ff) to the server.</div>
+<img src="ss5.png" alt="Task2 arp after">
+<div class="cap">Fig 5. The server's ARP table AFTER the attack - 10.0.2.8 is now poisoned to the fake MAC aa:bb:cc:dd:ee:ff.</div>
+
+<p><b>Comment on the observation:</b> before the attack the server mapped 10.0.2.8 to the real client
+MAC (36:7e:09:64:6d:f3). After i run tool 80, the server's ARP table changed and now 10.0.2.8 point to
+the fake aa:bb:cc:dd:ee:ff. One thing i noticed is that at first it did not change - this is because a
+modern Linux protect an existing (reachable) ARP entry and ignore unsolicited replies, which is exactly
+an anti-poisoning defence. So i had to enable <code>net.ipv4.conf.eth0.arp_accept=1</code> and delete
+the stale entry on the server, and then the forged reply was accepted and the cache got poisoned.</p>
+
+<p><b>How to mitigate this attack:</b> use static ARP entries so the mapping can not be overwritten by a
+reply; use Dynamic ARP Inspection (DAI) on the switch, which validate ARP messages against a DHCP
+snooping table; keep the OS-level protection turned on (the <code>arp_accept</code> behaviour i had to
+disable is actually a defence by default); and monitor the network with a tool like arpwatch. Encrypting
+the traffic also help, so even if it get redirected it is still useless to the attacker.</p>
+
+<!-- ============ TASK 3 ============ -->
+<h2>Task 3 &ndash; ICMP Redirect Attack</h2>
+<p>An ICMP redirect message is normally used by a router to tell a host "for this destination, use that
+other gateway instead of me". The problem is the host dont really validate where it come from, so an
+attacker can send a forged ICMP redirect and trick the victim into changing its routing table. I used
+netwag tool 86, and captured on the client with wireshark (filter icmp).</p>
+<span class="cmd">86 --device "Eth0" --gw 10.0.2.7 --spoofip "best" --src-ip 10.0.2.6</span>
+<img src="ss6.png" alt="Task3 ping capture">
+<div class="cap">Fig 6. The client pinging the server (10.0.2.8 &rarr; 10.0.2.6), captured in wireshark as ICMP Echo (ping) requests - the normal traffic before the attack.</div>
+<img src="ss7.png" alt="Task3 netwag 86">
+<div class="cap">Fig 7. netwag tool 86 configured to send a forged ICMP redirect, with the new gateway set to 10.0.2.7 (the attacker) and the source set to 10.0.2.6.</div>
+
+<h3>Making the attack actually work on a switched network</h3>
+<p>At first no redirect showed up at all. It is the same reason as the vmnet thing i mentioned - tool 86
+have to SNIFF the client's ping to the server first, and then react by sending a redirect, but on this
+switched virtual network the attacker cant see the client-to-server unicast traffic, so it had nothing
+to react to. To get around it, i ARP-poisoned the client so it think the server (10.0.2.6) is at the
+attacker's real MAC, which make the client send its ping through the attacker. After that the attacker
+could see the ping and tool 86 fired.</p>
+<img src="ss8.png" alt="Task3 arp workaround">
+<div class="cap">Fig 8. ARP poisoning the client so 10.0.2.6 (the server) now point to the attacker's MAC 12:97:e6:72:a2:9c - this let the attacker sniff the client's ping.</div>
+<img src="ss9.png" alt="Task3 icmp redirect captured">
+<div class="cap">Fig 9. The forged ICMP Redirect captured on the client (filter icmp.type == 5): Type 5 (Redirect), Code 1 (Redirect for host), Gateway address 10.0.2.7 (the attacker).</div>
+
+<p><b>Comment on the observation:</b> after the ARP trick, the client captured a forged
+<b>ICMP Redirect (Type 5, Code 1 "redirect for host")</b> with source 10.0.2.6, telling it to use
+gateway <b>10.0.2.7</b> (which is the attacker) for reaching 10.0.2.6. If the client accept this
+redirect, all of its traffic to 10.0.2.6 would go through the attacker, so it basically turn into a
+man-in-the-middle situation.</p>
+
+<p><b>How to mitigate this attack:</b> disable accepting ICMP redirects on the hosts
+(<code>net.ipv4.conf.all.accept_redirects=0</code> and <code>secure_redirects=0</code>); filter ICMP
+redirect messages at the firewall; and use static routes so the routing can not be changed by a
+message. And because the attack also needed ARP poisoning to work in the first place, the ARP defences
+from Task 2 (static ARP entries, Dynamic ARP Inspection) help to stop it as well.</p>
+
+</body>
+</html>
